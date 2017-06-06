@@ -1,0 +1,101 @@
+body    {
+    font-family: futura;
+    font-weight: 900;
+    margin: 0;
+    width: 100%;
+}
+a   {
+    color: #FF6262;
+    text-decoration: none;
+}
+
+#title   {
+    color: #FF6262;
+    font-size: 50pt;
+    text-align: center;
+    text-shadow: 0px 10px 30px rgba(255, 98, 102, .45);
+    margin-top: 10%
+}
+/* Bordered form */
+form {
+    width: 25%;
+    font-family: helvetica neue;
+    font-weight: 300;
+    margin: auto;
+}
+label   {
+    display: none;
+}
+/* Full-width inputs */
+input[type=text], input[type=password] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #FF6262;
+    box-sizing: border-box;
+}
+input[type=text]:focus, input[type=password]:focus {
+    outline: none;
+}
+input[type=accesscode], input[type=code] {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #FF6262;
+    box-sizing: border-box;
+}
+::placeholder   {
+    color: #FF6262;
+    
+}
+input[placeholder=Name], [placeholder=Email] {
+    color: #FF6262;
+    font-size: 10pt;
+    font-family: helvetica neue, helvetica, sans-serif;
+    
+}
+button[type=Submit] {
+    font-size: 10pt;
+    font-family: helvetica neue, helvetica, sans-serif;
+}
+/* Set a style for all buttons */
+button {
+    background-color: #FF6262;
+    color: white;
+    padding: 14px 20px;
+    margin: 8px 0;
+    border: none;
+    width: 100%; 
+}
+
+/* Add a hover effect for buttons */
+button:hover {
+    box-shadow: 0px 5px 20px #c1c1c1;
+    transition: 0.3s;
+    transition-duration: .3s;
+}
+
+
+/* Add padding to containers */
+.container {
+    padding: 16px;
+}
+
+/* The "Forgot password" text */
+span.psw {
+    float: right;
+    padding-top: 16px;
+}
+
+/* Change styles for span and cancel button on extra small screens */
+@media screen and (max-width: 300px) {
+    span.psw {
+        display: block;
+        float: none;
+    }
+    .cancelbtn {
+        width: 100%;
+    }
+}
