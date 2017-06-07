@@ -1,11 +1,12 @@
 # server/tests/functional_test.py
 
-from .base import BaseTestClass
+from tests.base import BaseTestClass
 
 
 class NewCompanyTest(BaseTestClass):
 
     def test_can_add_a_new_company(self):
+        """Test user can send a POST request to the server"""
         # After months of waiting, finally Jane, Bookoo's founder,
         # received an acceptance letter from The Brandery, one of the
         # best startup incubators in the US. On her first day of arrival,
