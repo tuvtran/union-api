@@ -26,23 +26,16 @@ def drop_db():
 
 
 @manager.command
-def test_unit():
+def test(type):
     """Run the unit tests without code coverage."""
-    tests = unittest.TestLoader().discover('tests/unit', pattern='test*.py')
-    result = unittest.TextTestRunner(verbosity=2).run(tests)
-    if result.wasSuccessful():
-        return 0
-    return 1
-
-
-@manager.command
-def test_functional():
-    """Run functional tests without code coverage."""
-    tests = unittest.TestLoader().discover('tests/functional', pattern='test*.py')
-    result = unittest.TextTestRunner(verbosity=2).run(tests)
-    if result.wasSuccessful():
-        return 0
-    return 1
+    try:
+        tests = unittest.TestLoader().discover(f'tests/{type}', pattern='test*.py')
+        result = unittest.TextTestRunner(verbosity=2).run(tests)
+        if result.wasSuccessful():
+            return 0
+        return 1
+    except ImportError:
+        print("There is no test like that!")
 
 
 if __name__ == "__main__":
