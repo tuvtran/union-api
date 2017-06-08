@@ -17,12 +17,21 @@ manager.add_command('db', MigrateCommand)
 def create_db():
     """Creates the db tables"""
     db.create_all()
+    db.session.commit()
 
 
 @manager.command
 def drop_db():
     """Drop all db tables"""
     db.drop_all()
+
+
+@manager.command
+def reset_db():
+    """Reset all db tables"""
+    db.drop_all()
+    db.create_all()
+    db.session.commit()
 
 
 @manager.command
