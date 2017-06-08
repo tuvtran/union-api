@@ -46,10 +46,11 @@ class CompanyApiTest(BaseTestClass):
         response = self.send_POST('/companies', self.data)
         self.assertEqual(response.status_code, 201)
         company = Company.query.first()
-        # TODO: check if founders are saved to the database
+
         self.assertEqual(company.name, self.data['name'])
         self.assertEqual(company.website, self.data['website'])
         self.assertEqual(company.bio, self.data['bio'])
+        self.assertIn('@demo.com', list(company.founders))
 
     def test_can_retrieve_a_company_message(self):
         """Test can send a POST request and create a new company.
@@ -81,4 +82,26 @@ class CompanyApiTest(BaseTestClass):
         self.assertEqual(company['website'], self.data['website'])
         self.assertEqual(company['bio'], self.data['bio'])
 
-    # TODO: add test for founders
+    def test_can_retrieve_a_company_with_founders(self):
+        """Test can send a GET request to retrieve company's info
+        based on ID with founders"""
+        # Add a new company to the database
+        demo = Company(
+            name=self.data['name'],
+            website=self.data['website'],
+            bio=self.data['bio'],
+        )
+        demo.save()
+
+        # Add founders into the database
+        # with reference to the newly created company
+        company_id = Company.query.first().id
+        for founder in self.data['founders']:
+            Founder(company_id=company_id, email=founder['email']).save()
+
+        # GET request
+        response = self.client.get(f'/companies/{company_id}')
+        self.assertEqual(response.status_code, 200)
+        company = json.loads(response.data.decode())
+        self.assertIn('founders', company)
+        self.assertIn('@demo.com', company['founders'])

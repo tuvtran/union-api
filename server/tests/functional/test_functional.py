@@ -42,10 +42,11 @@ class NewCompanyTest(BaseTestClass):
         # company's data.
         boocoo_id = data['id']
         get_response = self.client.get(f'/companies/{boocoo_id}')
-        self.assertEqual(get_response, 200)
+        self.assertEqual(get_response.status_code, 200)
         self.assertIn('id', str(get_response.data))
         self.assertIn('name', str(get_response.data))
         self.assertIn('founders', str(get_response.data))
+        self.assertIn('@boocoo.club', str(get_response.data))
 
         # Tada! It works! Now she can be sure that she could both send
         # a POST request to create her new company and fetch that using

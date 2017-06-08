@@ -34,7 +34,7 @@ class Founder(db.Model):
     role = db.Column(db.String(255))
 
     def __repr__(self):
-        return f'<{self.name} ({self.role}) - >'
+        return f'<{self.name} ({self.role}) - {self.email}>'
 
     def save(self):
         db.session.add(self)

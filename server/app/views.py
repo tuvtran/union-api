@@ -8,7 +8,7 @@ from flask import (
     abort
 )
 
-from app.models import Company
+from app.models import Company, Founder
 
 companies_blueprint = Blueprint('companies', __name__)
 
@@ -30,13 +30,21 @@ def companies():
             bio=request.json['bio'],
             website=request.json['website'],
         )
-
-        # TODO: add founders field
-
         company.save()
+
+        # if user sends founder list
+        if 'founders' in request.json:
+            for founder in request.json['founders']:
+                Founder(
+                    email=founder.get('email', ''),
+                    name=founder.get('name', ''),
+                    role=founder.get('role', '')
+                ).save()
+
         data = {
             'status': 'success',
-            'message': 'new company created!'
+            'message': 'new company created!',
+            'id': company.id
         }
         return make_response(jsonify(data)), 201
 
