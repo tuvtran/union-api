@@ -29,7 +29,10 @@ def drop_db():
 def test(type):
     """Run the unit tests without code coverage."""
     try:
-        tests = unittest.TestLoader().discover(f'tests/{type}', pattern='test*.py')
+        tests = unittest.TestLoader().discover(
+            f'tests/{type}',
+            pattern='test*.py'
+        )
         result = unittest.TextTestRunner(verbosity=2).run(tests)
         if result.wasSuccessful():
             return 0
