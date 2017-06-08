@@ -33,6 +33,14 @@ Company:
 - bio:      text
 ```
 
+Contact
+```yaml
+- id:       string  # Foreign Key to Company table
+- email:    string
+- name:     string
+- role:     string
+```
+
 Sale:
 ```yaml
 - id:       string  # Foreign Key to Company table
