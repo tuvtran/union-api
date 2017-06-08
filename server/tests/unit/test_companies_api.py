@@ -6,15 +6,6 @@ from app.models import Company, Founder
 
 
 class CompanyApiTest(BaseTestClass):
-    data = {
-        'name': 'Demo',
-        'founders': [
-            {'email': 'tu@demo.com'},
-            {'email': 'john@demo.com'}
-        ],
-        'website': 'http://www.demo.com',
-        'bio': 'This is a demo company',
-    }
 
     def send_POST(self, url, data):
         return self.client.post(
@@ -50,7 +41,7 @@ class CompanyApiTest(BaseTestClass):
         self.assertEqual(company.name, self.data['name'])
         self.assertEqual(company.website, self.data['website'])
         self.assertEqual(company.bio, self.data['bio'])
-        self.assertIn('@demo.com', list(company.founders))
+        self.assertIn('@demo.com', str(list(company.founders)))
 
     def test_can_retrieve_a_company_message(self):
         """Test can send a POST request and create a new company.
@@ -104,4 +95,4 @@ class CompanyApiTest(BaseTestClass):
         self.assertEqual(response.status_code, 200)
         company = json.loads(response.data.decode())
         self.assertIn('founders', company)
-        self.assertIn('@demo.com', company['founders'])
+        self.assertIn('@demo.com', str(company['founders']))

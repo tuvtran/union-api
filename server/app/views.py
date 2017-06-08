@@ -36,6 +36,7 @@ def companies():
         if 'founders' in request.json:
             for founder in request.json['founders']:
                 Founder(
+                    company_id=company.id,
                     email=founder.get('email', ''),
                     name=founder.get('name', ''),
                     role=founder.get('role', '')
@@ -57,8 +58,12 @@ def get_company(company_id):
             'id': company.id,
             'name': company.name,
             'website': company.website,
-            # TODO: figure out a way to add founders
-            'founders': [],
+            'founders': list(map(
+                lambda founder: {
+                    'email': founder.email,
+                },
+                list(company.founders)
+            )),
             'bio': company.bio
         }
         return jsonify(data)
