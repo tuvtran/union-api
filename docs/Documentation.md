@@ -26,16 +26,16 @@ Method | Endpoint | Usage | Returns | Authentication
 
 Company:
 ```yaml
-- id:       string
-- name:     string
-- founders:   array
-- website:  string
-- bio:      text
+- id:           integer
+- name:         string
+- founders:     array
+- website:      string
+- bio:          text
 ```
 
 Founder
 ```yaml
-- id:       string  # Foreign Key to Company table
+- id:       integer  # Foreign Key to Company table
 - email:    string
 - name:     string
 - role:     string
@@ -43,28 +43,28 @@ Founder
 
 Sale:
 ```yaml
-- id:       string  # Foreign Key to Company table
+- id:       integer  # Foreign Key to Company table
 - week:     integer
 - sales:    double
 ```
 
 Customer:
 ```yaml
-- id:           string  # Foreign Key to Company table
+- id:           integer  # Foreign Key to Company table
 - week:         integer
 - customers:    integers
 ```
 
 Web Traffic:
 ```yaml
-- id:       string  # Foreign Key to Company table
+- id:       integer  # Foreign Key to Company table
 - week:     integer
 - sales:    double
 ```
 
 Email:
 ```yaml
-- id:       string  # Foreign Key to Company table
+- id:       integer  # Foreign Key to Company table
 - week:     integer
 - emails:   integer
 ```
