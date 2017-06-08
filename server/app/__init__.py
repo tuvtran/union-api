@@ -18,4 +18,12 @@ def create_app(config_name):
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.init_app(app)
 
+    from app.views import companies_blueprint
+    from . import views, models
+
+    @app.route('/')
+    def index():
+        return '<h1>Greetings from The Brandery</h1>'
+
+    app.register_blueprint(companies_blueprint)
     return app
