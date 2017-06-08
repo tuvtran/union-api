@@ -5,7 +5,7 @@ from tests.base import BaseTestClass
 from app.models import Company, Founder
 
 
-class CompanyApiTest(BaseTestClass):
+class CompanyPOSTTest(BaseTestClass):
 
     def send_POST(self, url, data):
         return self.client.post(
@@ -14,26 +14,30 @@ class CompanyApiTest(BaseTestClass):
             content_type="application/json"
         )
 
+    def test_send_wrong_HTTP_requests(self):
+        response1 = self.client.put(
+            '/companies',
+            data=''
+        )
+        self.assertEqual(response1.status_code, 405)
+
+        response2 = self.client.delete(
+            '/companies'
+        )
+        self.assertEqual(response2.status_code, 405)
+
     def test_send_empty_POST_request(self):
-        """Test sending empty POST request
-        results in 400 status code
-        """
         response = self.send_POST('/companies', '')
         self.assertEqual(response.status_code, 400)
 
     def test_send_POST_request_without_name(self):
-        """Test sending POST request without name results
-        in 400 status code
-        """
         response = self.send_POST('/companies', {
             'bio': 'Random bio'
         })
         self.assertEqual(response.status_code, 400)
 
     def test_create_a_new_company_database(self):
-        """Test can send a POST request and create a new company.
-        Test if data has been saved to the database
-        """
+        """>\tSee if data is in database"""
         response = self.send_POST('/companies', self.data)
         self.assertEqual(response.status_code, 201)
         company = Company.query.first()
@@ -41,12 +45,11 @@ class CompanyApiTest(BaseTestClass):
         self.assertEqual(company.name, self.data['name'])
         self.assertEqual(company.website, self.data['website'])
         self.assertEqual(company.bio, self.data['bio'])
+        self.assertRegex(str(list(company.founders)), '(.+)')
         self.assertIn('@demo.com', str(list(company.founders)))
 
     def test_can_retrieve_a_company_message(self):
-        """Test can send a POST request and create a new company.
-        Check the message and status code
-        """
+        """>\tSee if returns the appropriate message"""
         response = self.send_POST('/companies', self.data)
         data = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 201)
@@ -54,9 +57,10 @@ class CompanyApiTest(BaseTestClass):
         self.assertIn('new company created!', data['message'])
         self.assertIn('id', data)
 
+
+class CompanyGETTest(BaseTestClass):
+
     def test_can_retrieve_a_company_without_founders(self):
-        """Test can send a GET request to retrieve company's info
-        based on ID"""
         demo = Company(
             name=self.data['name'],
             website=self.data['website'],
@@ -74,9 +78,6 @@ class CompanyApiTest(BaseTestClass):
         self.assertEqual(company['bio'], self.data['bio'])
 
     def test_can_retrieve_a_company_with_founders(self):
-        """Test can send a GET request to retrieve company's info
-        based on ID with founders"""
-        # Add a new company to the database
         demo = Company(
             name=self.data['name'],
             website=self.data['website'],
@@ -88,11 +89,17 @@ class CompanyApiTest(BaseTestClass):
         # with reference to the newly created company
         company_id = Company.query.first().id
         for founder in self.data['founders']:
-            Founder(company_id=company_id, email=founder['email']).save()
+            Founder(
+                company_id=company_id,
+                name=founder['name'],
+                email=founder['email'],
+                role=founder['role']
+            ).save()
 
         # GET request
         response = self.client.get(f'/companies/{company_id}')
         self.assertEqual(response.status_code, 200)
         company = json.loads(response.data.decode())
         self.assertIn('founders', company)
+        self.assertIn('role', str(company['founders']))
         self.assertIn('@demo.com', str(company['founders']))

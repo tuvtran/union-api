@@ -8,8 +8,16 @@ class BaseTestClass(TestCase):
     data = {
         'name': 'Demo',
         'founders': [
-            {'email': 'tu@demo.com'},
-            {'email': 'john@demo.com'}
+            {
+                'name': 'Tu Tran',
+                'email': 'tu@demo.com',
+                'role': 'CTO'
+            },
+            {
+                'name': 'John Average',
+                'email': 'john@demo.com',
+                'role': 'CEO'
+            }
         ],
         'website': 'http://www.demo.com',
         'bio': 'This is a demo company',

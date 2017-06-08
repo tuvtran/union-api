@@ -70,7 +70,9 @@ def get_company(company_id):
             'website': company.website,
             'founders': list(map(
                 lambda founder: {
+                    'name': founder.name,
                     'email': founder.email,
+                    'role': founder.role,
                 },
                 list(company.founders)
             )),
