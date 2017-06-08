@@ -13,7 +13,7 @@ class Company(db.Model):
     bio = db.Column(db.Text)
 
     def __repr__(self):
-        return f'<Company: {self.name}>'
+        return f'<Company: {self.name}, Website: {self.website}>'
 
     def save(self):
         db.session.add(self)

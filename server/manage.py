@@ -26,9 +26,19 @@ def drop_db():
 
 
 @manager.command
-def test():
-    """Run the tests without code coverage."""
-    tests = unittest.TestLoader().discover('tests', pattern='test*.py')
+def test_unit():
+    """Run the unit tests without code coverage."""
+    tests = unittest.TestLoader().discover('tests/unit', pattern='test*.py')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        return 0
+    return 1
+
+
+@manager.command
+def test_functional():
+    """Run functional tests without code coverage."""
+    tests = unittest.TestLoader().discover('tests/functional', pattern='test*.py')
     result = unittest.TextTestRunner(verbosity=2).run(tests)
     if result.wasSuccessful():
         return 0

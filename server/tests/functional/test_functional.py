@@ -32,20 +32,15 @@ class NewCompanyTest(BaseTestClass):
         self.assertEqual(response.status_code, 201)
 
         # After Jane sends a request, she receives a JSON object with a success
-        # message and the content including her company's name, id in the
-        # database,emails of the cofounders, bio and website.
+        # message and her company's id in the databse
         data = json.loads(response.data.decode())
-        boocoo_id = data['id']
-        self.assertIn(
-            'Boocoo is a AI startup specializing in random stuff',
-            str(response.data)
-        )
-        self.assertIn('id', str(response.data))
-        self.assertIn('name', str(response.data))
-        self.assertIn('founders', str(response.data))
+        self.assertIn('id', data)
+        self.assertIn('success', data['status'])
+        self.assertIn('new company created!', data['message'])
 
         # Once she gets the id, she tries calling the server to fetch the
         # company's data.
+        boocoo_id = data['id']
         get_response = self.client.get(f'/companies/{boocoo_id}')
         self.assertEqual(get_response, 200)
         self.assertIn('id', str(get_response.data))

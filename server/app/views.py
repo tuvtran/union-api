@@ -3,10 +3,12 @@
 from flask import (
     Blueprint,
     jsonify,
-    request
+    request,
+    make_response,
+    abort
 )
 
-from app.models import Company, Founder
+from app.models import Company
 
 companies_blueprint = Blueprint('companies', __name__)
 
@@ -19,6 +21,10 @@ def companies():
     if request.method == 'GET':
         pass
     elif request.method == 'POST':
+        # If data is empty or there is no field
+        if not (request.json and 'name' in request.json):
+            abort(400)
+
         company = Company(
             name=request.json['name'],
             bio=request.json['bio'],
@@ -29,18 +35,15 @@ def companies():
 
         company.save()
         data = {
-            'id': company.id,
-            'name': company.name,
-            'bio': company.bio,
-            'website': company.website,
-            'founders': company.founders
+            'status': 'success',
+            'message': 'new company created!'
         }
-        return jsonify(data)
+        return make_response(jsonify(data)), 201
 
 
 @companies_blueprint.route('/companies/<company_id>', methods=['GET'])
 def get_company(company_id):
-    company = Company.query.filter_by(id=company_id).first()
+    company = Company.query.get(company_id)
     if company:
         data = {
             'id': company.id,
