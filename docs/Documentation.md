@@ -28,12 +28,12 @@ Company:
 ```yaml
 - id:       string
 - name:     string
-- emails:   array
+- founders:   array
 - website:  string
 - bio:      text
 ```
 
-Contact
+Founder
 ```yaml
 - id:       string  # Foreign Key to Company table
 - email:    string
