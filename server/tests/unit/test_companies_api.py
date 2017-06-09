@@ -1,7 +1,9 @@
 # server/tests/test_companies.py
 
 import json
+import unittest
 from tests.base import BaseTestClass
+from tests.sample_data import data1
 from app.models import Company, Founder
 
 
@@ -38,24 +40,29 @@ class CompanyPOSTTest(BaseTestClass):
 
     def test_create_a_new_company_database(self):
         """>\tSee if data is in database"""
-        response = self.send_POST('/companies', self.data)
+        response = self.send_POST('/companies', data1)
         self.assertEqual(response.status_code, 201)
         company = Company.query.first()
 
-        self.assertEqual(company.name, self.data['name'])
-        self.assertEqual(company.website, self.data['website'])
-        self.assertEqual(company.bio, self.data['bio'])
+        self.assertEqual(company.name, data1['name'])
+        self.assertEqual(company.website, data1['website'])
+        self.assertEqual(company.bio, data1['bio'])
         self.assertRegex(str(list(company.founders)), '(.+)')
         self.assertIn('@demo.com', str(list(company.founders)))
 
     def test_can_retrieve_a_company_message(self):
         """>\tSee if returns the appropriate message"""
-        response = self.send_POST('/companies', self.data)
+        response = self.send_POST('/companies', data1)
         data = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 201)
         self.assertIn('success', data['status'])
         self.assertIn('new company created!', data['message'])
         self.assertIn('id', data)
+
+    @unittest.skip
+    def test_cannot_add_duplicate_companies(self):
+        response1 = self.send_POST('/companies', data1)
+        response2 = self.send_POST('/companies', data1)
 
 
 class CompanyGETTest(BaseTestClass):
@@ -69,9 +76,9 @@ class CompanyGETTest(BaseTestClass):
 
     def test_can_retrieve_a_company_without_founders(self):
         demo = Company(
-            name=self.data['name'],
-            website=self.data['website'],
-            bio=self.data['bio'],
+            name=data1['name'],
+            website=data1['website'],
+            bio=data1['bio'],
         )
         demo.save()
         company_id = Company.query.first().id
@@ -80,22 +87,22 @@ class CompanyGETTest(BaseTestClass):
         response = self.client.get(f'/companies/{company_id}')
         self.assertEqual(response.status_code, 200)
         company = json.loads(response.data.decode())
-        self.assertEqual(company['name'], self.data['name'])
-        self.assertEqual(company['website'], self.data['website'])
-        self.assertEqual(company['bio'], self.data['bio'])
+        self.assertEqual(company['name'], data1['name'])
+        self.assertEqual(company['website'], data1['website'])
+        self.assertEqual(company['bio'], data1['bio'])
 
     def test_can_retrieve_a_company_with_founders(self):
         demo = Company(
-            name=self.data['name'],
-            website=self.data['website'],
-            bio=self.data['bio'],
+            name=data1['name'],
+            website=data1['website'],
+            bio=data1['bio'],
         )
         demo.save()
 
         # Add founders into the database
         # with reference to the newly created company
         company_id = Company.query.first().id
-        for founder in self.data['founders']:
+        for founder in data1['founders']:
             Founder(
                 company_id=company_id,
                 name=founder['name'],

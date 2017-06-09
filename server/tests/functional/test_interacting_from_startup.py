@@ -2,6 +2,7 @@
 
 import json
 from tests.base import BaseTestClass
+from tests.sample_data import data2
 
 
 class NewCompanyTest(BaseTestClass):
@@ -15,18 +16,7 @@ class NewCompanyTest(BaseTestClass):
         # built. Excited, Jane tried sending a POST request with fake data.
         response = self.client.post(
             '/companies',
-            data=json.dumps({
-                'name': 'Boocoo',
-                'founders': [
-                    {'email': 'jane@boocoo.club'},
-                    {'email': 'tu@boocoo.club'},
-                    {'email': 'sed@boocoo.club'}
-                ],
-                'website': 'http://boocoo.club',
-                'bio': """
-                    Boocoo is a AI startup specializing in random stuff
-                """
-            }),
+            data=json.dumps(data2),
             content_type='application/json',
         )
         self.assertEqual(response.status_code, 201)

@@ -5,23 +5,6 @@ from app import create_app, db
 
 
 class BaseTestClass(TestCase):
-    data = {
-        'name': 'Demo',
-        'founders': [
-            {
-                'name': 'Tu Tran',
-                'email': 'tu@demo.com',
-                'role': 'CTO'
-            },
-            {
-                'name': 'John Average',
-                'email': 'john@demo.com',
-                'role': 'CEO'
-            }
-        ],
-        'website': 'http://www.demo.com',
-        'bio': 'This is a demo company',
-    }
 
     def create_app(self):
         return create_app(config_name='testing')
