@@ -7,6 +7,7 @@ from flask import (
     make_response,
     abort
 )
+from sqlalchemy.exc import IntegrityError
 
 from app.models import Company, Founder
 
@@ -27,7 +28,14 @@ def create_company():
         bio=request.json['bio'],
         website=request.json['website'],
     )
-    company.save()
+
+    try:
+        company.save()
+    except IntegrityError:
+        return jsonify({
+            'status': 'failure',
+            'message': 'company already exists'
+        }), 400
 
     # if user sends founder list
     if 'founders' in request.json:

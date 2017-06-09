@@ -1,20 +1,12 @@
 # server/tests/test_companies.py
 
 import json
-import unittest
 from tests.base import BaseTestClass
 from tests.sample_data import data1
 from app.models import Company, Founder
 
 
 class CompanyPOSTTest(BaseTestClass):
-
-    def send_POST(self, url, data):
-        return self.client.post(
-            url,
-            data=json.dumps(data),
-            content_type="application/json"
-        )
 
     def test_send_wrong_HTTP_requests(self):
         response1 = self.client.put(
@@ -50,29 +42,36 @@ class CompanyPOSTTest(BaseTestClass):
         self.assertRegex(str(list(company.founders)), '(.+)')
         self.assertIn('@demo.com', str(list(company.founders)))
 
-    def test_can_retrieve_a_company_message(self):
+    def test_can_create_a_company_message(self):
         """>\tSee if returns the appropriate message"""
         response = self.send_POST('/companies', data1)
-        data = json.loads(response.data.decode())
+        response_ = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 201)
-        self.assertIn('success', data['status'])
-        self.assertIn('new company created!', data['message'])
-        self.assertIn('id', data)
+        self.assertIn('success', response_['status'])
+        self.assertIn('new company created!', response_['message'])
+        self.assertIn('id', response_)
 
-    @unittest.skip
     def test_cannot_add_duplicate_companies(self):
-        response1 = self.send_POST('/companies', data1)
-        response2 = self.send_POST('/companies', data1)
+        self.send_POST('/companies', data1)
+        response = self.send_POST('/companies', data1)
+
+        self.assertEqual(response.status_code, 400)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('failure', response_['status'])
+        self.assertIn(
+            'company already exists',
+            response_['message']
+        )
 
 
 class CompanyGETTest(BaseTestClass):
 
     def test_send_invalid_id(self):
         response = self.client.get('/companies/999999')
-        data = json.loads(response.data.decode())
+        response_ = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 404)
-        self.assertIn('failure', data['status'])
-        self.assertIn('company not found', data['message'])
+        self.assertIn('failure', response_['status'])
+        self.assertIn('company not found', response_['message'])
 
     def test_can_retrieve_a_company_without_founders(self):
         demo = Company(
@@ -86,10 +85,10 @@ class CompanyGETTest(BaseTestClass):
         # GET request
         response = self.client.get(f'/companies/{company_id}')
         self.assertEqual(response.status_code, 200)
-        company = json.loads(response.data.decode())
-        self.assertEqual(company['name'], data1['name'])
-        self.assertEqual(company['website'], data1['website'])
-        self.assertEqual(company['bio'], data1['bio'])
+        response_ = json.loads(response.data.decode())
+        self.assertEqual(response_['name'], data1['name'])
+        self.assertEqual(response_['website'], data1['website'])
+        self.assertEqual(response_['bio'], data1['bio'])
 
     def test_can_retrieve_a_company_with_founders(self):
         demo = Company(
@@ -113,7 +112,7 @@ class CompanyGETTest(BaseTestClass):
         # GET request
         response = self.client.get(f'/companies/{company_id}')
         self.assertEqual(response.status_code, 200)
-        company = json.loads(response.data.decode())
-        self.assertIn('founders', company)
-        self.assertIn('role', str(company['founders']))
-        self.assertIn('@demo.com', str(company['founders']))
+        response_ = json.loads(response.data.decode())
+        self.assertIn('founders', response_)
+        self.assertIn('role', str(response_['founders']))
+        self.assertIn('@demo.com', str(response_['founders']))

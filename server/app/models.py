@@ -7,7 +7,7 @@ class Company(db.Model):
 
     __tablename__ = 'companies'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(255), nullable=False)
+    name = db.Column(db.String(255), nullable=False, unique=True)
     founders = db.relationship('Founder', backref='company', lazy='dynamic')
     website = db.Column(db.String(255), nullable=False, unique=True)
     bio = db.Column(db.Text)

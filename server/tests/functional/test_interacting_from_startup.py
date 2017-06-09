@@ -5,10 +5,10 @@ from tests.base import BaseTestClass
 from tests.sample_data import data2
 
 
-class NewCompanyTest(BaseTestClass):
+class InterfacingFromStartupTest(BaseTestClass):
 
     def test_can_add_a_new_company(self):
-        """Test user can send a POST and GET request to the server"""
+        """>\tTest user can send a POST and GET request to the server"""
         # After months of waiting, finally Jane, Boocoo's founder,
         # received an acceptance letter from The Brandery, one of the
         # best startup incubators in the US. On her first day of arrival,
@@ -19,7 +19,6 @@ class NewCompanyTest(BaseTestClass):
             data=json.dumps(data2),
             content_type='application/json',
         )
-        self.assertEqual(response.status_code, 201)
 
         # After Jane sends a request, she receives a JSON object with a success
         # message and her company's id in the databse
