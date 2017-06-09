@@ -63,19 +63,25 @@ def companies():
 @companies_blueprint.route('/companies/<company_id>', methods=['GET'])
 def get_company(company_id):
     company = Company.query.get(company_id)
-    if company:
-        data = {
-            'id': company.id,
-            'name': company.name,
-            'website': company.website,
-            'founders': list(map(
-                lambda founder: {
-                    'name': founder.name,
-                    'email': founder.email,
-                    'role': founder.role,
-                },
-                list(company.founders)
-            )),
-            'bio': company.bio
-        }
-        return jsonify(data)
+
+    if not company:
+        return jsonify({
+            'status': 'failure',
+            'message': 'company not found'
+        }), 404
+
+    data = {
+        'id': company.id,
+        'name': company.name,
+        'website': company.website,
+        'founders': list(map(
+            lambda founder: {
+                'name': founder.name,
+                'email': founder.email,
+                'role': founder.role,
+            },
+            list(company.founders)
+        )),
+        'bio': company.bio
+    }
+    return jsonify(data)

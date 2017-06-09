@@ -60,6 +60,13 @@ class CompanyPOSTTest(BaseTestClass):
 
 class CompanyGETTest(BaseTestClass):
 
+    def test_send_invalid_id(self):
+        response = self.client.get('/companies/999999')
+        data = json.loads(response.data.decode())
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('failure', data['status'])
+        self.assertIn('company not found', data['message'])
+
     def test_can_retrieve_a_company_without_founders(self):
         demo = Company(
             name=self.data['name'],
