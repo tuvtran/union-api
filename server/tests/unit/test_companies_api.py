@@ -2,7 +2,11 @@
 
 import json
 from tests.base import BaseTestClass
-from tests.sample_data import data1
+from tests.sample_data import (
+    data1,
+    data2,
+    data3
+)
 from app.models import Company, Founder
 
 
@@ -116,3 +120,37 @@ class CompanyGETTest(BaseTestClass):
         self.assertIn('founders', response_)
         self.assertIn('role', str(response_['founders']))
         self.assertIn('@demo.com', str(response_['founders']))
+
+    def test_get_all_companies_0(self):
+        """>\t With no company in database"""
+        response = self.client.get('/companies')
+        self.assertEqual(response.status_code, 200)
+        response_ = json.loads(response.data.decode())
+        self.assertEqual(response_['total'], 0)
+        self.assertEqual(len(response_['companies']), 0)
+
+    def test_get_all_companies_3(self):
+        """>\t With 3 companies in the database"""
+        for data in [data1, data2, data3]:
+            self.send_POST('/companies', data)
+
+        response = self.client.get('/companies')
+        response_ = json.loads(response.data.decode())
+
+        self.assertIn('total', response_)
+        self.assertIn('companies', response_)
+
+        self.assertEqual(response_['total'], 3)
+        self.assertEqual(len(response_['companies']), 3)
+
+        for company in response_['companies']:
+            self.assertIn('id', company)
+            self.assertIn('name', company)
+            self.assertIn('bio', company)
+            self.assertIn('website', company)
+            self.assertIn('founders', company)
+            self.assertEqual(str(type(company['founders'])), "<class 'list'>")
+            self.assertGreater(len(company['founders']), 0)
+
+            for founder in company['founders']:
+                self.assertIn('email', founder)

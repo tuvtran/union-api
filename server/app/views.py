@@ -15,7 +15,28 @@ companies_blueprint = Blueprint('companies', __name__)
 
 
 def get_all_companies():
-    pass
+    companies = list(map(
+        lambda company: {
+            'id': company.id,
+            'name': company.name,
+            'website': company.website,
+            'bio': company.bio,
+            'founders': list(map(
+                lambda founder: {
+                    'name': founder.name,
+                    'email': founder.email,
+                    'role': founder.role
+                },
+                company.founders
+            )),
+        },
+        Company.query.all()
+    ))
+
+    return jsonify({
+        'total': Company.query.count(),
+        'companies': companies
+    }), 200
 
 
 def create_company():
