@@ -6,7 +6,7 @@ from tests.base import BaseTestClass
 from tests.sample_data import data1, kpis
 
 
-class KPIAPITest(BaseTestClass):
+class KpiPOSTTest(BaseTestClass):
 
     def kpi_for_week(self, week=0):
         assert week < min(list(map(
@@ -65,23 +65,27 @@ class KPIAPITest(BaseTestClass):
     def test_post_to_invalid_company(self):
         response = self.send_POST('/companies/1233', data=self.kpi_for_week(0))
 
-        self.assert400(response)
+        self.assert404(response)
 
         response_ = json.loads(response.data.decode())
         self.assertIn('failure', response_['status'])
-        self.assertIn('invalid company id', response_['message'])
+        self.assertIn('company not found', response_['message'])
 
     def test_post_all_kpis_to_company_message(self):
         """>\tPOST all the KPIs successfully and returns the correct message"""
         company_id = self.get_id_from_POST(data1)
+        data = self.kpi_for_week()
         response = self.send_POST(
             f'/companies/{company_id}',
-            data=self.kpi_for_week(0)
+            data=data
         )
         response_ = json.loads(response.data.decode())
         self.assert200(response)
         self.assertIn('success', response_['status'])
         self.assertIn('metrics added', response_['message'])
+        self.assertIn('metrics_added', response_)
+        for metric in response_['metrics_added']:
+            self.assertEqual(response_['metrics_added'][metric], data[metric])
 
     def test_post_one_kpi_to_company_message(self):
         """>\tPOST just one KPI successfully and returns the correct message"""

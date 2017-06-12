@@ -9,9 +9,23 @@ from flask import (
 )
 from sqlalchemy.exc import IntegrityError
 
-from app.models import Company, Founder
+from app.models import (
+    Company,
+    Founder,
+    Sale,
+    Customer,
+    Traffic,
+    Email
+)
 
 companies_blueprint = Blueprint('companies', __name__)
+
+KPI = {
+    'sales': Sale,
+    'customers': Customer,
+    'traffic': Traffic,
+    'emails': Email
+}
 
 
 def get_all_companies():
@@ -130,3 +144,27 @@ def post_company(company_id):
                 'status': 'failure',
                 'message': 'one of the metrics is empty'
             }), 400
+
+    company = Company.query.get(company_id)
+
+    if not company:
+        return jsonify({
+            'status': 'failure',
+            'message': 'company not found'
+        }), 404
+
+    response_data = {
+        'metrics_added': {}
+    }
+
+    for metric in request.json:
+        KPI[metric](
+            company_id=company_id,
+            value=request.json[metric]
+        ).save()
+        response_data['metrics_added'][metric] = request.json[metric]
+
+    response_data['status'] = 'success'
+    response_data['message'] = 'metrics added'
+
+    return jsonify(response_data), 200

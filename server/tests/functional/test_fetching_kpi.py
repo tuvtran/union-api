@@ -28,22 +28,26 @@ class KPITest(BaseTestClass):
         # are company name, message, status, and metrics added
         self.assertIn('success', kpi_response['status'])
         self.assertIn('metrics added', kpi_response['message'])
-        self.assertIn('sales', kpi_response)
-        self.assertIn('customers', kpi_response)
-        self.assertIn('traffic', kpi_response)
-        self.assertIn('emails', kpi_response)
+        self.assertIn('metrics_added', kpi_response)
+
+        kpi = kpi_response['metrics_added']
+
+        self.assertIn('sales', kpi)
+        self.assertIn('customers', kpi)
+        self.assertIn('traffic', kpi)
+        self.assertIn('emails', kpi)
 
         # She checks if the returned metrics are the same as
         # what she inputs in earlier
-        sales = kpi_response['sales']
-        customers = kpi_response['customers']
-        traffic = kpi_response['traffic']
-        emails = kpi_response['emails']
+        sales = kpi['sales']
+        customers = kpi['customers']
+        traffic = kpi['traffic']
+        emails = kpi['emails']
 
-        self.assertEqual(sales, kpi_response['sales'][0])
-        self.assertEqual(customers, kpi_response['customers'][0])
-        self.assertEqual(traffic, kpi_response['traffic'][0])
-        self.assertEqual(emails, kpi_response['emails'][0])
+        self.assertEqual(sales, kpis['sales'][0])
+        self.assertEqual(customers, kpis['customers'][0])
+        self.assertEqual(traffic, kpis['traffic'][0])
+        self.assertEqual(emails, kpis['emails'][0])
 
         # Ensured they are equal, she now sends a GET request
         # as a last step to make sure
