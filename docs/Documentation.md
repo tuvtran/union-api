@@ -21,6 +21,8 @@ Method | Endpoint | Usage | Returns | Authentication
  GET | `/companies/{company_id}/traffic` | Get a company's weekly traffic information | Company's name and web traffic | OAuth
  GET | `/companies/{company_id}/customers` | Get a company's weekly customers information | Company's name and customers | OAuth
  POST | `/companies` | Create a new company | success/error message and company object | OAuth
+ POST | `/companies/{company_id}` | Add KPI metrics to a company | success/error message and the metrics recently added | OAuth
+ PUT | `/companies/{company_id}` | Update a company's information including name, bio, website, and KPI metrics | success/error message and data recently updated | OAuth
 
 ## Database Design:
 
