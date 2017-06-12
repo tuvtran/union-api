@@ -14,6 +14,11 @@ class BaseTestClass(TestCase):
             content_type="application/json"
         )
 
+    def get_id_from_POST(self, data):
+        return json.loads(
+            self.send_POST('/companies', data).data.decode()['id']
+        )
+
     def create_app(self):
         return create_app(config_name='testing')
 

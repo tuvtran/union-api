@@ -9,11 +9,8 @@ class KPITest(BaseTestClass):
 
     def test_create_a_company_and_add_kpi_metrics(self):
         # Jane adds her startup to the database by sending
-        # a POST request
-        response = self.send_POST('/companies', data=data1)
-
-        # Then she gets the id from returned object
-        company_id = json.loads(response.data.decode())['id']
+        # a POST request and get the company's id
+        company_id = self.get_id_from_POST(data1)
 
         # Getting the company unique id in the database, she
         # adds the KPI tracking information for the first week.
