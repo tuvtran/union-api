@@ -54,7 +54,7 @@ Customer:
 ```yaml
 - id:           integer  # Foreign Key to Company table
 - week:         integer
-- customers:    integers
+- customers:    integer
 ```
 
 Web Traffic:
