@@ -89,7 +89,7 @@ def companies():
         return 405
 
 
-@companies_blueprint.route('/companies/<company_id>', methods=['GET'])
+@companies_blueprint.route('/companies/<int:company_id>', methods=['GET'])
 def get_company(company_id):
     company = Company.query.get(company_id)
 
@@ -114,3 +114,19 @@ def get_company(company_id):
         'bio': company.bio
     }
     return jsonify(data)
+
+
+@companies_blueprint.route('/companies/<int:company_id>', methods=['POST'])
+def post_company(company_id):
+    if not request.json:
+        return jsonify({
+            'status': 'failure',
+            'message': 'empty metrics'
+        }), 400
+
+    for metric in request.json:
+        if request.json[metric] == '':
+            return jsonify({
+                'status': 'failure',
+                'message': 'one of the metrics is empty'
+            }), 400

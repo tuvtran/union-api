@@ -23,13 +23,13 @@ class Company(db.Model):
 class Founder(db.Model):
 
     __tablename__ = 'founders'
+    id = db.Column(db.Integer, primary_key=True)
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
     name = db.Column(db.String(255))
     email = db.Column(
         db.String(255),
         nullable=False,
-        unique=True,
-        primary_key=True
+        unique=True
     )
     role = db.Column(db.String(255))
 
@@ -39,3 +39,27 @@ class Founder(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+
+class Sale(db.Model):
+
+    __tablename__ = 'sales'
+    id = db.Column(db.Integer, primary_key=True)
+
+
+class Customer(db.Model):
+
+    __tablename__ = 'customers'
+    id = db.Column(db.Integer, primary_key=True)
+
+
+class Traffic(db.Model):
+
+    __tablename__ = 'traffic'
+    id = db.Column(db.Integer, primary_key=True)
+
+
+class Email(db.Model):
+
+    __tablename__ = 'emails'
+    id = db.Column(db.Integer, primary_key=True)
