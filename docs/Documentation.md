@@ -103,7 +103,6 @@ Sale:
 - company_id:   integer  # Foreign Key to Company table
 - week:         integer
 - value:        double
-- sales:        double
 ```
 
 Customer:
@@ -120,7 +119,6 @@ Web Traffic:
 - company_id:   integer  # Foreign Key to Company table
 - week:         integer
 - value:        integer
-- traffic:      integer
 ```
 
 Email:
@@ -129,5 +127,4 @@ Email:
 - company_id:   integer  # Foreign Key to Company table
 - week:         integer
 - value:        integer
-- emails:       integer
 ```
