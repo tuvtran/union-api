@@ -61,3 +61,10 @@ data3 = {
     'website': 'http://axxios.io',
     'bio': "We specialize in making humans less stupid."
 }
+
+kpis = {
+    'sales': [30.2, 40.4, 50.5, 45.7, 70.9, 80.1],
+    'customers': [23, 30, 40, 43, 45, 52],
+    'traffic': [123, 234, 566, 899, 1000, 1200],
+    'emails': [23, 30, 40, 42, 45, 52]
+}
