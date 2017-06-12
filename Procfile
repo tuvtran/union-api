@@ -1,0 +1,1 @@
+web: gunicorn --chdir server wsgi:app --log-file=- -w 4
