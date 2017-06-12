@@ -1,5 +1,11 @@
 # Union Board Documentation
 
+## Table of contents:
+* [Requests](#requests)
+* [API Endpoints](#api-endpoints)
+* [POST Request content](#post-request-content)
+* [Database Design](#database-design)
+
 ## Requests:
 
 Verb | Description
@@ -10,7 +16,6 @@ Verb | Description
  DELETE | Used for deleting resources
 
 ## API Endpoints:
-
 
 Method | Endpoint | Usage | Returns | Authentication
 ---------|----------|--------- | ---------- | ---------
@@ -25,6 +30,53 @@ Method | Endpoint | Usage | Returns | Authentication
  POST | `/companies/{company_id}` | Add KPI metrics to a company | success/error message and the metrics recently added | OAuth
  PUT | `/companies/{company_id}` | Update a company's information including name, bio, website, and KPI metrics | success/error message and data recently updated | OAuth
 
+## POST Request content:
+
+`POST /companies`
+
+Request:
+```json
+{
+    "name": "Demo",
+    "founders": [
+        {
+            "name": "Tu Tran",
+            "email": "tu@demo.com",
+            "role": "CTO"
+        },
+        {
+            "name": "John Average",
+            "email": "john@demo.com",
+            "role": "CEO"
+        }
+    ],
+    "website": "http://www.demo.com",
+    "bio": "This is a demo company. Nothing too special here."
+}
+```
+
+Returns:
+
+On success
+```json
+{
+    "status": "success",
+    "message": "new company created!",
+    "id": 12342345
+}
+```
+
+On failure
+```json
+{
+    "status": "failure",
+    "message": "error message"
+}
+```
+
+`POST /companies/{company_id}`
+
+
 ## Database Design:
 
 Company:
@@ -38,36 +90,41 @@ Company:
 
 Founder
 ```yaml
-- id:       integer  # Foreign Key to Company table
-- email:    string
-- name:     string
-- role:     string
+- id:           integer
+- company_id:   integer  # Foreign Key to Company table
+- email:        string
+- name:         string
+- role:         string
 ```
 
 Sale:
 ```yaml
-- id:       integer  # Foreign Key to Company table
-- week:     integer
-- sales:    double
+- id:           integer
+- company_id:   integer  # Foreign Key to Company table
+- week:         integer
+- value:        double
 ```
 
 Customer:
 ```yaml
-- id:           integer  # Foreign Key to Company table
+- id:           integer
+- company_id:   integer  # Foreign Key to Company table
 - week:         integer
-- customers:    integer
+- value:        integer
 ```
 
 Web Traffic:
 ```yaml
-- id:         integer  # Foreign Key to Company table
-- week:       integer
-- traffic:    integer
+- id:           integer
+- company_id:   integer  # Foreign Key to Company table
+- week:         integer
+- value:        integer
 ```
 
 Email:
 ```yaml
-- id:       integer  # Foreign Key to Company table
-- week:     integer
-- emails:   integer
+- id:           integer
+- company_id:   integer  # Foreign Key to Company table
+- week:         integer
+- value:        integer
 ```
