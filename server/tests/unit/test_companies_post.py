@@ -1,4 +1,4 @@
-# server/tests/test_companies.py
+# server/tests/test_companies_post.py
 
 import json
 from tests.base import BaseTestClass
