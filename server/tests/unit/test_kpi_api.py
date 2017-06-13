@@ -127,6 +127,36 @@ class KpiPOSTTest(BaseTestClass):
         self.assertIsNone(traffic)
         self.assertIsNone(emails)
 
+    def test_post_all_kpis_to_company_many_weeks_database(self):
+        """>\tPOST all the KPIs over the span of 4 weeks and
+        check if the database has the information"""
+        company_id = self.get_id_from_POST(data1)
+
+        for i in range(4):
+            self.send_POST(
+                f'/companies/{company_id}',
+                data=self.kpi_for_week(i)
+            )
+
+        sale = Sale.query.filter_by(company_id=company_id)
+        customers = Customer.query.filter_by(company_id=company_id)
+        traffic = Traffic.query.filter_by(company_id=company_id)
+        emails = Email.query.filter_by(company_id=company_id)
+
+        for i in range(4):
+            weekly_kpis = self.kpi_for_week(i)
+            # Check for value
+            self.assertEqual(sale[i].value, weekly_kpis['sales'])
+            self.assertEqual(customers[i].value, weekly_kpis['customers'])
+            self.assertEqual(traffic[i].value, weekly_kpis['traffic'])
+            self.assertEqual(emails[i].value, weekly_kpis['emails'])
+
+            # Check for week number
+            self.assertEqual(sale[i].week, i)
+            self.assertEqual(customers[i].week, i)
+            self.assertEqual(traffic[i].week, i)
+            self.assertEqual(emails[i].week, i)
+
 
 class KpiGETTest(BaseTestClass):
 

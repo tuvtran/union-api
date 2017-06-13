@@ -52,8 +52,13 @@ class Sale(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
     value = db.Column(db.Float, nullable=False)
+    week = db.Column(db.Integer, nullable=False)
 
     def save(self):
+        last = Sale.query.filter_by(company_id=self.company_id)\
+            .order_by(Sale.week.desc()).first()
+        self.week = last.week + 1 if last else 0
+
         db.session.add(self)
         db.session.commit()
 
@@ -64,8 +69,13 @@ class Customer(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
     value = db.Column(db.Integer, nullable=False)
+    week = db.Column(db.Integer, nullable=False)
 
     def save(self):
+        last = Customer.query.filter_by(company_id=self.company_id)\
+            .order_by(Customer.week.desc()).first()
+        self.week = last.week + 1 if last else 0
+
         db.session.add(self)
         db.session.commit()
 
@@ -76,8 +86,13 @@ class Traffic(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
     value = db.Column(db.Integer, nullable=False)
+    week = db.Column(db.Integer, nullable=False)
 
     def save(self):
+        last = Traffic.query.filter_by(company_id=self.company_id)\
+            .order_by(Traffic.week.desc()).first()
+        self.week = last.week + 1 if last else 0
+
         db.session.add(self)
         db.session.commit()
 
@@ -88,7 +103,12 @@ class Email(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     company_id = db.Column(db.Integer, db.ForeignKey('companies.id'))
     value = db.Column(db.Integer, nullable=False)
+    week = db.Column(db.Integer, nullable=False)
 
     def save(self):
+        last = Email.query.filter_by(company_id=self.company_id)\
+            .order_by(Email.week.desc()).first()
+        self.week = last.week + 1 if last else 0
+
         db.session.add(self)
         db.session.commit()
