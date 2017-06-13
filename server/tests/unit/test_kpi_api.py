@@ -5,24 +5,15 @@ from app.models import Sale, Customer, Traffic, Email
 from tests.base import BaseTestClass
 from tests.sample_data import data1, kpis
 
+KPI = {
+    'sales': Sale,
+    'customers': Customer,
+    'traffic': Traffic,
+    'emails': Email
+}
+
 
 class KpiPOSTTest(BaseTestClass):
-
-    def kpi_for_week(self, week=0):
-        assert week < min(list(map(
-            len, [
-                kpis['sales'],
-                kpis['customers'],
-                kpis['traffic'],
-                kpis['emails']
-            ]
-        )))
-        return {
-            'sales': kpis['sales'][week],
-            'customers': kpis['customers'][week],
-            'traffic': kpis['traffic'][week],
-            'emails': kpis['emails'][week],
-        }
 
     def test_post_empty_metrics(self):
         company_id = self.get_id_from_POST(data1)
@@ -100,3 +91,43 @@ class KpiPOSTTest(BaseTestClass):
         self.assert200(response)
         self.assertIn('success', response_['status'])
         self.assertIn('metrics added', response_['message'])
+        self.assertEqual(response_['metrics_added']['sales'], 123)
+
+    def test_post_all_kpis_to_company_database(self):
+        """>\tPOST all the KPIs successfully and adds data to the database"""
+        company_id = self.get_id_from_POST(data1)
+        data = self.kpi_for_week()
+        self.send_POST(
+            f'/companies/{company_id}',
+            data=data
+        )
+        sale = Sale.query.filter_by(company_id=company_id)
+        customers = Customer.query.filter_by(company_id=company_id)
+        traffic = Traffic.query.filter_by(company_id=company_id)
+        emails = Email.query.filter_by(company_id=company_id)
+        self.assertEqual(sale[0].value, data['sales'])
+        self.assertEqual(customers[0].value, data['customers'])
+        self.assertEqual(traffic[0].value, data['traffic'])
+        self.assertEqual(emails[0].value, data['emails'])
+
+    def test_post_one_kpi_to_company_database(self):
+        company_id = self.get_id_from_POST(data1)
+        self.send_POST(
+            f'/companies/{company_id}',
+            data={
+                'sales': 123
+            }
+        )
+        sale = Sale.query.filter_by(company_id=company_id)
+        customers = Customer.query.filter_by(company_id=company_id).first()
+        traffic = Traffic.query.filter_by(company_id=company_id).first()
+        emails = Email.query.filter_by(company_id=company_id).first()
+        self.assertEqual(sale[0].value, 123)
+        self.assertIsNone(customers)
+        self.assertIsNone(traffic)
+        self.assertIsNone(emails)
+
+
+class KpiGETTest(BaseTestClass):
+
+    pass

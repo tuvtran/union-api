@@ -3,9 +3,26 @@
 import json
 from flask_testing import TestCase
 from app import create_app, db
+from tests.sample_data import kpis
 
 
 class BaseTestClass(TestCase):
+
+    def kpi_for_week(self, week=0):
+        assert week < min(list(map(
+            len, [
+                kpis['sales'],
+                kpis['customers'],
+                kpis['traffic'],
+                kpis['emails']
+            ]
+        )))
+        return {
+            'sales': kpis['sales'][week],
+            'customers': kpis['customers'][week],
+            'traffic': kpis['traffic'][week],
+            'emails': kpis['emails'][week],
+        }
 
     def send_POST(self, url, data):
         return self.client.post(
