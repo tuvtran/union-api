@@ -3,7 +3,7 @@
 ## Table of contents:
 * [Requests](#requests)
 * [API Endpoints](#api-endpoints)
-* [POST Request content](#post-request-content)
+* [Sample Data Format](#sample-data-format)
 * [Database Design](#database-design)
 
 ## Requests:
@@ -17,24 +17,66 @@ Verb | Description
 
 ## API Endpoints:
 
-Method | Endpoint | Usage | Returns | Authentication
----------|----------|--------- | ---------- | ---------
- GET | `/companies` | Get all companies' information | Arrays of companies | OAuth
- GET | `/companies/{company_id}` | Get a company information | Object including name, founders' email and bio | OAuth
- GET | `/companies/{company_id}?fields={name,emails,website,bio}` | Get a company information based on particular parameters | Object including fields specified in the request parameter | OAuth
- GET | `/companies/{company_id}/sales` | Get a company's weekly sales information | Company's name and sales | OAuth
- GET | `/companies/{company_id}/traffic` | Get a company's weekly traffic information | Company's name and web traffic | OAuth
- GET | `/companies/{company_id}/customers` | Get a company's weekly customers information | Company's name and customers | OAuth
- GET | `/companies/{company_id}/emails` | Get a company's weekly emails information | Company's name and emails | OAuth
- POST | `/companies` | Create a new company | success/error message and company object | OAuth
- POST | `/companies/{company_id}` | Add KPI metrics to a company | success/error message and the metrics recently added | OAuth
- PUT | `/companies/{company_id}` | Update a company's information including name, bio, website, and KPI metrics | success/error message and data recently updated | OAuth
+Done | Method | Endpoint | Usage | Returns | Authentication
+---------|---------|----------|--------- | ---------- | ---------
+ [x] | GET | `/companies` | Get all companies' information | Arrays of companies | OAuth
+ [x] | GET | `/companies/{company_id}` | Get a company information | Object including name, founders' email and bio | OAuth
+ [x] | GET | `/companies/{company_id}?fields={name,emails,website,bio}` | Get a company information based on particular parameters | Object including fields specified in the request parameter | OAuth
+ [x] | GET | `/companies/{company_id}/sales` | Get a company's weekly sales information | Company's name and sales | OAuth
+ [x] | GET | `/companies/{company_id}/traffic` | Get a company's weekly traffic information | Company's name and web traffic | OAuth
+ [x] | GET | `/companies/{company_id}/customers` | Get a company's weekly customers information | Company's name and customers | OAuth
+ [x] | GET | `/companies/{company_id}/emails` | Get a company's weekly emails information | Company's name and emails | OAuth
+ [x] | POST | `/companies` | Create a new company | success/error message and company object | OAuth
+ [x] | POST | `/companies/{company_id}` | Add KPI metrics to a company | success/error message and the metrics recently added | OAuth
+ [ ] | PUT | `/companies/{company_id}/update` | Update a company's information including name, bio, website, and KPI metrics | success/error message and data recently updated | OAuth
 
-## POST Request content:
+## Sample Data Request:
 
-`POST /companies`
+### `GET /companies`
 
-Request:
+Return format:
+```json
+{
+    "total": 2,
+    "companies": [
+        {
+            "id": 145,
+            "name": "Demo",
+            "founders": [
+                {
+                    "name": "Tu Tran",
+                    "email": "tu@demo.com",
+                    "role": "CTO"
+                },
+                {
+                    "name": "John Average",
+                    "email": "john@demo.com",
+                    "role": "CEO"
+                }
+            ],
+            "website": "http://www.demo.com",
+            "bio": "This is a demo company. Nothing too special here."
+        },
+        {
+            "id": 2030,
+            "name": "Boocoo",
+            "founders": [
+                {
+                    "name": "Jane Jacob",
+                    "email": "jane@boocoo.club",
+                    "role": "CEO"
+                }
+            ],
+            "website": "http://boocoo.club",
+            "bio": "Boocoo is a AI startup specializing in random stuff."
+        }
+    ]
+}
+```
+
+### `POST /companies`
+
+Request body:
 ```json
 {
     "name": "Demo",
@@ -55,9 +97,9 @@ Request:
 }
 ```
 
-Returns:
+Return format:
 
-On success
+On success:
 ```json
 {
     "status": "success",
@@ -66,7 +108,7 @@ On success
 }
 ```
 
-On failure
+On failure:
 ```json
 {
     "status": "failure",
@@ -74,7 +116,42 @@ On failure
 }
 ```
 
-`POST /companies/{company_id}`
+### `POST /companies/{company_id}`
+
+Request body:
+```json
+{
+    "sales": 123.7,
+    "customers": 23,
+    "traffic": 950,
+    "emails": 500
+}
+```
+**Note**: Any fields can be omitted but **cannot** be empty
+
+Return format:
+
+On success:
+```json
+{
+    "status": "success",
+    "message": "metrics added",
+    "metrics_added": {
+        "sales": 123.7,
+        "customers": 23,
+        "traffic": 950,
+        "emails": 500
+    }
+}
+```
+
+On failure:
+```json
+{
+    "status": "failure",
+    "message": "one of the metrics is empty"
+}
+```
 
 
 ## Database Design:
