@@ -70,3 +70,6 @@ class CompanyPOSTTest(BaseTestClass):
             'company already exists',
             response_['message']
         )
+
+        # Check that the database does not add the second company
+        self.assertEqual(Company.query.count(), 1)

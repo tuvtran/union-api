@@ -8,7 +8,8 @@ from flask import (
 )
 from sqlalchemy.exc import IntegrityError
 
-from app.apis import companies_blueprint
+from app import db
+from app.apis import companies_blueprint as company
 from app.models import Company, Founder
 
 
@@ -51,6 +52,7 @@ def create_company():
     try:
         company.save()
     except IntegrityError:
+        db.session.rollback()
         return jsonify({
             'status': 'failure',
             'message': 'company already exists'
@@ -74,7 +76,7 @@ def create_company():
     return make_response(jsonify(data)), 201
 
 
-@companies_blueprint.route('/companies', methods=['GET', 'POST'])
+@company.route('/companies', methods=['GET', 'POST'])
 def companies():
     """GET to retrieve all the companies
     POST to create a new company
@@ -87,7 +89,7 @@ def companies():
         return 405
 
 
-@companies_blueprint.route('/companies/<int:company_id>', methods=['GET'])
+@company.route('/companies/<int:company_id>', methods=['GET'])
 def get_company(company_id):
     company = Company.query.get(company_id)
 
