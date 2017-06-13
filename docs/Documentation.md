@@ -2,6 +2,7 @@
 
 ## Table of contents:
 * [Requests](#requests)
+* [Progress](#progress)
 * [API Endpoints](#api-endpoints)
 * [Sample Data Format](#sample-data-format)
 * [Database Design](#database-design)
@@ -15,20 +16,33 @@ Verb | Description
  PUT | Used for changing/replacing resources
  DELETE | Used for deleting resources
 
+## Progress:
+- [x] `GET /companies`
+- [x] `GET /companies/{company_id}`
+- [ ] `GET /companies/{company_id}?fields={name,emails,website,bio}`
+- [x] `GET /companies/{company_id}/sales`
+- [x] `GET /companies/{company_id}/customers`
+- [x] `GET /companies/{company_id}/traffic`
+- [x] `GET /companies/{company_id}/emails`
+- [x] `POST /companies`
+- [x] `POST /companies/{company_id}`
+- [ ] `PUT /companies/{company_id}/update`
+
+
 ## API Endpoints:
 
-Done | Method | Endpoint | Usage | Returns | Authentication
----------|---------|----------|--------- | ---------- | ---------
- [x] | GET | `/companies` | Get all companies' information | Arrays of companies | OAuth
- [x] | GET | `/companies/{company_id}` | Get a company information | Object including name, founders' email and bio | OAuth
- [x] | GET | `/companies/{company_id}?fields={name,emails,website,bio}` | Get a company information based on particular parameters | Object including fields specified in the request parameter | OAuth
- [x] | GET | `/companies/{company_id}/sales` | Get a company's weekly sales information | Company's name and sales | OAuth
- [x] | GET | `/companies/{company_id}/traffic` | Get a company's weekly traffic information | Company's name and web traffic | OAuth
- [x] | GET | `/companies/{company_id}/customers` | Get a company's weekly customers information | Company's name and customers | OAuth
- [x] | GET | `/companies/{company_id}/emails` | Get a company's weekly emails information | Company's name and emails | OAuth
- [x] | POST | `/companies` | Create a new company | success/error message and company object | OAuth
- [x] | POST | `/companies/{company_id}` | Add KPI metrics to a company | success/error message and the metrics recently added | OAuth
- [ ] | PUT | `/companies/{company_id}/update` | Update a company's information including name, bio, website, and KPI metrics | success/error message and data recently updated | OAuth
+ Method | Endpoint | Usage | Returns | Authentication
+---------|----------|--------- | ---------- | ---------
+ GET | `/companies` | Get all companies' information | Arrays of companies | OAuth
+ GET | `/companies/{company_id}` | Get a company information | Object including name, founders' email and bio | OAuth
+ GET | `/companies/{company_id}?fields={name,emails,website,bio}` | Get a company information based on particular parameters | Object including fields specified in the request parameter | OAuth
+ GET | `/companies/{company_id}/sales` | Get a company's weekly sales information | Company's name and sales | OAuth
+ GET | `/companies/{company_id}/traffic` | Get a company's weekly traffic information | Company's name and web traffic | OAuth
+ GET | `/companies/{company_id}/customers` | Get a company's weekly customers information | Company's name and customers | OAuth
+ GET | `/companies/{company_id}/emails` | Get a company's weekly emails information | Company's name and emails | OAuth
+ POST | `/companies` | Create a new company | success/error message and company object | OAuth
+ POST | `/companies/{company_id}` | Add KPI metrics to a company | success/error message and the metrics recently added | OAuth
+ PUT | `/companies/{company_id}/update` | Update a company's information including name, bio, website, and KPI metrics | success/error message and data recently updated | OAuth
 
 ## Sample Data Format:
 
