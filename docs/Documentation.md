@@ -30,7 +30,7 @@ Done | Method | Endpoint | Usage | Returns | Authentication
  [x] | POST | `/companies/{company_id}` | Add KPI metrics to a company | success/error message and the metrics recently added | OAuth
  [ ] | PUT | `/companies/{company_id}/update` | Update a company's information including name, bio, website, and KPI metrics | success/error message and data recently updated | OAuth
 
-## Sample Data Request:
+## Sample Data Format:
 
 ### `GET /companies`
 
