@@ -52,10 +52,9 @@ Return format:
 ```json
 {
     "total": 2,
-    "companies": [
-        {
+    "companies": {
+        "Demo": {
             "id": 145,
-            "name": "Demo",
             "founders": [
                 {
                     "name": "Tu Tran",
@@ -71,9 +70,8 @@ Return format:
             "website": "http://www.demo.com",
             "bio": "This is a demo company. Nothing too special here."
         },
-        {
+        "Boocoo": {
             "id": 2030,
-            "name": "Boocoo",
             "founders": [
                 {
                     "name": "Jane Jacob",
@@ -84,7 +82,7 @@ Return format:
             "website": "http://boocoo.club",
             "bio": "Boocoo is a AI startup specializing in random stuff."
         }
-    ]
+    }
 }
 ```
 
