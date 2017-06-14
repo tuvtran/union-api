@@ -35,7 +35,7 @@ def reset_db():
 
 
 @manager.command
-def test(type):
+def test(type=""):
     """Run the unit tests without code coverage."""
     try:
         tests = unittest.TestLoader().discover(

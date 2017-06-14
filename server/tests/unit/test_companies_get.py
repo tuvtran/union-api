@@ -90,7 +90,10 @@ class CompanyGETTest(BaseTestClass):
             self.assertIn('bio', companies[name])
             self.assertIn('website', companies[name])
             self.assertIn('founders', companies[name])
-            self.assertEqual(str(type(companies[name]['founders'])), "<class 'list'>")
+            self.assertEqual(
+                str(type(companies[name]['founders'])),
+                "<class 'list'>"
+            )
             self.assertGreater(len(companies[name]['founders']), 0)
 
             for founder in companies[name]['founders']:
