@@ -14,23 +14,21 @@ from app.models import Company, Founder
 
 
 def get_all_companies():
-    companies = list(map(
-        lambda company: {
-            'id': company.id,
-            'name': company.name,
-            'website': company.website,
-            'bio': company.bio,
+    companies = {}
+    for startup in Company.query.all():
+        companies[startup.name] = {
+            'id': startup.id,
+            'website': startup.website,
+            'bio': startup.bio,
             'founders': list(map(
                 lambda founder: {
                     'name': founder.name,
                     'email': founder.email,
                     'role': founder.role
                 },
-                company.founders
+                startup.founders
             )),
-        },
-        Company.query.all()
-    ))
+        }
 
     return jsonify({
         'total': Company.query.count(),

@@ -69,7 +69,7 @@ class CompanyGETTest(BaseTestClass):
         self.assertEqual(response.status_code, 200)
         response_ = json.loads(response.data.decode())
         self.assertEqual(response_['total'], 0)
-        self.assertEqual(len(response_['companies']), 0)
+        self.assertDictEqual(response_['companies'], {})
 
     def test_get_all_companies_3(self):
         """>\t With 3 companies in the database"""
@@ -83,16 +83,15 @@ class CompanyGETTest(BaseTestClass):
         self.assertIn('companies', response_)
 
         self.assertEqual(response_['total'], 3)
-        self.assertEqual(len(response_['companies']), 3)
 
-        for company in response_['companies']:
-            self.assertIn('id', company)
-            self.assertIn('name', company)
-            self.assertIn('bio', company)
-            self.assertIn('website', company)
-            self.assertIn('founders', company)
-            self.assertEqual(str(type(company['founders'])), "<class 'list'>")
-            self.assertGreater(len(company['founders']), 0)
+        companies = response_['companies']
+        for name in companies:
+            self.assertIn('id', companies[name])
+            self.assertIn('bio', companies[name])
+            self.assertIn('website', companies[name])
+            self.assertIn('founders', companies[name])
+            self.assertEqual(str(type(companies[name]['founders'])), "<class 'list'>")
+            self.assertGreater(len(companies[name]['founders']), 0)
 
-            for founder in company['founders']:
+            for founder in companies[name]['founders']:
                 self.assertIn('email', founder)

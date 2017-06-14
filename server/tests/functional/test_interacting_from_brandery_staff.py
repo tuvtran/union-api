@@ -27,16 +27,14 @@ class InterfacingFromBranderyTest(BaseTestClass):
 
         # He gets an array of length 3, which is neat
         self.assertEqual(response_['total'], 3)
-        self.assertEqual(len(companies), 3)
 
         # In every entry of the array there is
         # sufficient data including name, bio, website,
         # and founders' info
-        for company in companies:
-            self.assertIn('name', company)
-            self.assertIn('founders', company)
-            self.assertIn('bio', company)
-            self.assertIn('website', company)
+        for name in companies:
+            self.assertIn('founders', companies[name])
+            self.assertIn('bio', companies[name])
+            self.assertIn('website', companies[name])
 
         # Then he realizes shit gets real and he
         # has never been mistaken to hand over the
