@@ -27,14 +27,6 @@ def dropdb():
 
 
 @manager.command
-def resetdb():
-    """Reset all db tables"""
-    db.drop_all()
-    db.create_all()
-    db.session.commit()
-
-
-@manager.command
 def test(type=""):
     """Run the unit tests without code coverage."""
     try:
