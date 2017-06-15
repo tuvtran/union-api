@@ -11,10 +11,22 @@ from sqlalchemy.exc import IntegrityError
 from app import db
 from app.apis import companies_blueprint as company
 from app.apis.auth import protected_route
-from app.models import Company, Founder
+from app.models import (
+    Company,
+    User,
+    Founder,
+)
 
 
-def get_all_companies():
+def get_all_companies(resp):
+    user = User.query.get(resp)
+
+    if not user.staff:
+        return jsonify({
+            'status': 'failure',
+            'message': 'non-staff is not allowed to view all companies'
+        }), 401
+
     companies = {}
     for startup in Company.query.all():
         companies[startup.name] = {
@@ -37,10 +49,18 @@ def get_all_companies():
     }), 200
 
 
-def create_company():
+def create_company(resp):
     # If data is empty or there is no field
     if not (request.json and 'name' in request.json):
         abort(400)
+
+    user = User.query.get(resp)
+
+    if not user.staff:
+        return jsonify({
+            'status': 'failure',
+            'message': 'non-staff not allowed to '
+        }), 401
 
     company = Company(
         name=request.json['name'],
@@ -82,9 +102,9 @@ def companies(resp=None):
     POST to create a new company
     """
     if request.method == 'GET':
-        return get_all_companies()
+        return get_all_companies(resp)
     elif request.method == 'POST':
-        return create_company()
+        return create_company(resp)
     else:
         return 405
 
@@ -99,6 +119,14 @@ def get_company(company_id, resp=None):
             'status': 'failure',
             'message': 'company not found'
         }), 404
+
+    user = User.query.get(resp)
+
+    if not user.staff and user.founder_info.company_id != company_id:
+        return jsonify({
+            'status': 'failure',
+            'message': 'user is not authorized to this view'
+        }), 401
 
     data = {
         'id': company.id,

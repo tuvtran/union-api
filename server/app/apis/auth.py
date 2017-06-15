@@ -72,15 +72,16 @@ def post():
 @auth.route('/auth/status', methods=['GET'])
 @protected_route
 def user_status(resp=None):
-    print("INSIDE user_status")
-    user = User.query.filter_by(id=resp).first()
+    user = User.query.get(resp)
     response_obj = {
         'status': 'success',
         'data': {
             'user_id': user.id,
             'email': user.email,
-            'company': user.founder_info.company.name,
+            'company': user.founder_info.company.name
+            if user.founder_info else 'The Brandery',
             'registered_on': user.registered_on,
+            'staff': user.staff,
         }
     }
     return jsonify(response_obj), 200
