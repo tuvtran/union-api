@@ -27,9 +27,15 @@ Verb | Description
 - [x] `POST /companies`
 - [x] `POST /companies/{company_id}`
 - [ ] `PUT /companies/{company_id}/update`
+- [ ] `POST /auth/login`
+- [ ] `POST /auth/change`
+- [ ] `GET /auth/status`
+- [ ] `POST /auth/logout`
 
 
 ## API Endpoints:
+
+### Startup-related API:
 
  Method | Endpoint | Usage | Returns | Authentication
 ---------|----------|--------- | ---------- | ---------
@@ -44,11 +50,20 @@ Verb | Description
  POST | `/companies/{company_id}` | Add KPI metrics to a company | success/error message and the metrics recently added | OAuth
  PUT | `/companies/{company_id}/update` | Update a company's information including name, bio, website, and KPI metrics | success/error message and data recently updated | OAuth
 
+### Authentication API:
+
+ Method | Endpoint | Usage | Returns | Authentication
+---------|----------|--------- | ---------- | ---------
+ POST | `/auth/login` | Log in | status and authentication token | None
+ POST | `/auth/change` | Change a user's password | status and message | OAuth
+ GET | `/auth/status` | Check the current status of the user, whether Brandery staff or startup founders | object with user information | OAuth
+ POST | `/auth/logout` | Log out | status and message | OAuth
+
 ## Sample Data Format:
 
 ### `GET /companies`
 
-Return format:
+#### Return format:
 ```json
 {
     "total": 2,
@@ -86,9 +101,44 @@ Return format:
 }
 ```
 
+### `GET /companies/{company_id}`
+
+#### Return format:
+```json
+{
+    "id": 145,
+    "name": "Demo",
+    "website": "http://demo.com",
+    "founders" : [
+        {
+            "name": "Tu Tran",
+            "email": "tu@demo.com",
+            "role": "CTO"
+        },
+        {
+            "name": "John Average",
+            "email": "john@demo.com",
+            "role": "CEO"
+        }
+    ],
+    "bio": "This is a demo company. Nothing too special here"
+}
+```
+
+### `GET /companies/{company_id}/{metric}`
+
+#### Return format:
+```json
+{
+    "weeks": 4,
+    "last_updated": "June 19th 2017",
+    "data": [12, 34, 56, 23]
+}
+```
+
 ### `POST /companies`
 
-Request body:
+#### Request body:
 ```json
 {
     "name": "Demo",
@@ -109,8 +159,7 @@ Request body:
 }
 ```
 
-Return format:
-
+#### Return format:
 On success:
 ```json
 {
@@ -130,7 +179,7 @@ On failure:
 
 ### `POST /companies/{company_id}`
 
-Request body:
+#### Request body:
 ```json
 {
     "sales": 123.7,
@@ -141,8 +190,7 @@ Request body:
 ```
 **Note**: Any fields can be omitted but **cannot** be empty
 
-Return format:
-
+#### Return format:
 On success:
 ```json
 {
@@ -165,10 +213,49 @@ On failure:
 }
 ```
 
+### `POST /auth/login`
+
+#### Request Body:
+```json
+{
+    "email": "john.doe@companyx.com",
+    "password": "123456"
+}
+```
+
+#### Return format:
+On success:
+```json
+{
+    "status": "success",
+    "message": "logged in",
+    "auth_token": "AaDEW143G@d"
+}
+```
+
+On failure:
+```json
+{
+    "status": "failure",
+    "message": "wrong password or user does not exist"
+}
+```
+
+### `POST /auth/change`
+
+TODO
+
+### `GET /auth/status`
+
+TODO
+
+### `POST /auth/logout`
+
+TODO
 
 ## Database Design:
 
-Company:
+### Company:
 ```yaml
 - id:           integer
 - name:         string
@@ -177,7 +264,7 @@ Company:
 - bio:          text
 ```
 
-Founder
+### Founder
 ```yaml
 - id:           integer
 - company_id:   integer  # Foreign Key to Company table
@@ -186,7 +273,17 @@ Founder
 - role:         string
 ```
 
-Sale:
+### User
+```yaml
+- id:           integer
+- founder_id:   integer # Foreign Key to Founder table
+- email:        integer
+- password:     string
+- created_at:   datetime
+- staff:        boolean
+```
+
+### Sale:
 ```yaml
 - id:           integer
 - company_id:   integer  # Foreign Key to Company table
@@ -194,7 +291,7 @@ Sale:
 - value:        double
 ```
 
-Customer:
+### Customer:
 ```yaml
 - id:           integer
 - company_id:   integer  # Foreign Key to Company table
@@ -202,7 +299,7 @@ Customer:
 - value:        integer
 ```
 
-Web Traffic:
+### Web Traffic:
 ```yaml
 - id:           integer
 - company_id:   integer  # Foreign Key to Company table
@@ -210,7 +307,7 @@ Web Traffic:
 - value:        integer
 ```
 
-Email:
+### Email:
 ```yaml
 - id:           integer
 - company_id:   integer  # Foreign Key to Company table
