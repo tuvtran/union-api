@@ -70,7 +70,7 @@ class BaseMetric(db.Model):
         db.session.commit()
 
     @classmethod
-    def last_updated(cls, company_id):
+    def get_last_updated(cls, company_id):
         """Return a data point that is last updated/created"""
         return cls.query.filter_by(company_id=company_id)\
             .order_by(cls.updated_at.desc()).first()

@@ -78,9 +78,11 @@ def get_metric(company_id, metric):
     kpi_query = KPI[metric].query.filter_by(company_id=company_id)
     total_weeks = kpi_query.count()
     values = kpi_query.order_by(KPI[metric].week).all()
+    last_updated = KPI[metric].get_last_updated(company_id).updated_at
 
     return jsonify({
         'weeks': total_weeks,
+        'last_updated': last_updated,
         'data': list(map(
             lambda value: value.value,
             values

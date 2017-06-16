@@ -131,7 +131,8 @@ Verb | Description
 ```json
 {
     "weeks": 4,
-    "last_updated": "June 19th 2017",
+    // "%a, %d %b %Y %H:%M:%S GMT"
+    "last_updated": "Fri, 16 Jun 2017 15:57:23 GMT",
     "data": [12, 34, 56, 23]
 }
 ```

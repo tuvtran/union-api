@@ -20,7 +20,7 @@ class MetricTest(BaseTestClass):
         for metric in self.KPI:
             metric_class = self.KPI[metric]
             self.assertEqual(
-                metric_class.last_updated(company_id),
+                metric_class.get_last_updated(company_id),
                 metric_class.query.all()[-1]
             )
 

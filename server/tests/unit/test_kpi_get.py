@@ -1,12 +1,16 @@
 # server/tests/unit/test_kpi_get.py
 
 import json
+import datetime
 from tests.base import BaseTestClass
 from tests.sample_data import data1
 
 
 class KpiGETTest(BaseTestClass):
     metrics = ['sales', 'customers', 'traffic', 'emails']
+
+    # Format like "Fri, 16 Jun 2017 15:57:23 GMT"
+    time_formatter = "%a, %d %b %Y %H:%M:%S GMT"
 
     def test_invalid_metric_api_call(self):
         company_id = self.get_id_from_POST(data1)
@@ -35,8 +39,19 @@ class KpiGETTest(BaseTestClass):
             self.assert200(response)
             self.assertEqual(response_['weeks'], 1)
             self.assertIn('data', response_)
+            self.assertIn('last_updated', response_)
             self.assertEqual(len(response_['data']), 1)
             self.assertEqual(response_['data'][0], data[metric])
+
+            # The return object is valid if the last_updated field
+            # is less than 2 minutes of the time making the request
+            now = datetime.datetime.now()
+            time_from_response = response_['last_updated']
+            self.assertLess(
+                now - datetime.datetime.strptime(
+                    time_from_response, self.time_formatter),
+                datetime.timedelta(days=0, minutes=2)
+            )
 
     def test_get_data_many_weeks(self):
         company_id = self.get_id_from_POST(data1)
@@ -57,7 +72,18 @@ class KpiGETTest(BaseTestClass):
             self.assert200(response)
             self.assertEqual(response_['weeks'], count)
             self.assertIn('data', response_)
+            self.assertIn('last_updated', response_)
             self.assertEqual(len(response_['data']), count)
+
+            # The return object is valid if the last_updated field
+            # is less than 2 minutes of the time making the request
+            now = datetime.datetime.now()
+            time_from_response = response_['last_updated']
+            self.assertLess(
+                now - datetime.datetime.strptime(
+                    time_from_response, self.time_formatter),
+                datetime.timedelta(days=0, minutes=2)
+            )
 
             for i in range(count):
                 weekly_kpis = self.kpi_for_week(i)
