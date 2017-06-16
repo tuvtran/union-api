@@ -20,10 +20,7 @@ Verb | Description
 - [x] `GET /companies`
 - [x] `GET /companies/{company_id}`
 - [ ] `GET /companies/{company_id}?fields={name,emails,website,bio}`
-- [x] `GET /companies/{company_id}/sales`
-- [x] `GET /companies/{company_id}/customers`
-- [x] `GET /companies/{company_id}/traffic`
-- [x] `GET /companies/{company_id}/emails`
+- [x] `GET /companies/{company_id}/{metric}`
 - [x] `POST /companies`
 - [x] `POST /companies/{company_id}`
 - [ ] `PUT /companies/{company_id}/update`
@@ -42,13 +39,10 @@ Verb | Description
  GET | `/companies` | Get all companies' information | Arrays of companies | OAuth
  GET | `/companies/{company_id}` | Get a company information | Object including name, founders' email and bio | OAuth
  GET | `/companies/{company_id}?fields={name,emails,website,bio}` | Get a company information based on particular parameters | Object including fields specified in the request parameter | OAuth
- GET | `/companies/{company_id}/sales` | Get a company's weekly sales information | Company's name and sales | OAuth
- GET | `/companies/{company_id}/traffic` | Get a company's weekly traffic information | Company's name and web traffic | OAuth
- GET | `/companies/{company_id}/customers` | Get a company's weekly customers information | Company's name and customers | OAuth
- GET | `/companies/{company_id}/emails` | Get a company's weekly emails information | Company's name and emails | OAuth
+ GET | `/companies/{company_id}/{metric}` | Get a company's weekly metric information | Company's name and sales | OAuth
  POST | `/companies` | Create a new company | success/error message and company object | OAuth
  POST | `/companies/{company_id}` | Add KPI metrics to a company | success/error message and the metrics recently added | OAuth
- PUT | `/companies/{company_id}/update` | Update a company's information including name, bio, website, and KPI metrics | success/error message and data recently updated | OAuth
+ PUT | `/companies/{company_id}/update` | Update a company's metric (value and updated_at field) | success/error message and data recently updated | OAuth
 
 ### Authentication API:
 
