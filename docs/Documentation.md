@@ -284,34 +284,11 @@ TODO
 - staff:        boolean
 ```
 
-### Sale:
+### Metric (Sale, Customer, Traffic, Email):
 ```yaml
 - id:           integer
 - company_id:   integer  # Foreign Key to Company table
 - week:         integer
+- updated_at:   datetime
 - value:        double
-```
-
-### Customer:
-```yaml
-- id:           integer
-- company_id:   integer  # Foreign Key to Company table
-- week:         integer
-- value:        integer
-```
-
-### Web Traffic:
-```yaml
-- id:           integer
-- company_id:   integer  # Foreign Key to Company table
-- week:         integer
-- value:        integer
-```
-
-### Email:
-```yaml
-- id:           integer
-- company_id:   integer  # Foreign Key to Company table
-- week:         integer
-- value:        integer
 ```
