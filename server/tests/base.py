@@ -3,10 +3,17 @@
 import json
 from flask_testing import TestCase
 from app import create_app, db
+from app.models import Sale, Customer, Traffic, Email
 from tests.sample_data import kpis
 
 
 class BaseTestClass(TestCase):
+    KPI = {
+        'sales': Sale,
+        'customers': Customer,
+        'traffic': Traffic,
+        'emails': Email
+    }
 
     def kpi_for_week(self, week=0):
         assert week < min(list(map(

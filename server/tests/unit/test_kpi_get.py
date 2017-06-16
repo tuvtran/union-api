@@ -1,16 +1,8 @@
 # server/tests/unit/test_kpi_get.py
 
 import json
-from app.models import Sale, Customer, Traffic, Email
 from tests.base import BaseTestClass
 from tests.sample_data import data1
-
-KPI = {
-    'sales': Sale,
-    'customers': Customer,
-    'traffic': Traffic,
-    'emails': Email
-}
 
 
 class KpiGETTest(BaseTestClass):
@@ -56,7 +48,8 @@ class KpiGETTest(BaseTestClass):
             )
 
         for metric in self.metrics:
-            count = KPI[metric].query.filter_by(company_id=company_id).count()
+            count = self.KPI[metric].query\
+                .filter_by(company_id=company_id).count()
 
             response = self.client.get(f'/companies/{company_id}/{metric}')
             response_ = json.loads(response.data.decode())

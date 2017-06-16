@@ -5,13 +5,6 @@ from app.models import Sale, Customer, Traffic, Email
 from tests.base import BaseTestClass
 from tests.sample_data import data1, kpis
 
-KPI = {
-    'sales': Sale,
-    'customers': Customer,
-    'traffic': Traffic,
-    'emails': Email
-}
-
 
 class KpiPOSTTest(BaseTestClass):
 
