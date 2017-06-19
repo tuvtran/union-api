@@ -21,7 +21,17 @@ class AuthTest(BaseTestClass):
 
     def test_login_invalid_email(self):
         response = self.send_POST('/auth/login', {
-            'email': ''
+            'email': '',
+            'password': 'staff'
+        })
+        self.assert400(response)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('failure', response_['status'])
+        self.assertIn('invalid login request', response_['message'])
+
+    def test_login_no_password(self):
+        response = self.send_POST('/auth/login', {
+            'email': 'staff@brandery.org'
         })
         self.assert400(response)
         response_ = json.loads(response.data.decode())

@@ -23,7 +23,11 @@ def create_app(config_name):
     db.init_app(app)
     bcrypt.init_app(app)
 
-    from app.apis import companies_blueprint, kpi_blueprint
+    from app.apis import (
+        auth_blueprint,
+        companies_blueprint,
+        kpi_blueprint
+    )
     from app import models      # noqa
 
     @app.route('/')
@@ -32,4 +36,5 @@ def create_app(config_name):
 
     app.register_blueprint(companies_blueprint)
     app.register_blueprint(kpi_blueprint)
+    app.register_blueprint(auth_blueprint)
     return app
