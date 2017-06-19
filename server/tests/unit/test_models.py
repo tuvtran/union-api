@@ -1,5 +1,7 @@
 # server/tests/unit/test_models.py
 
+from app import db
+from app.models import Sale
 from tests.base import BaseTestClass
 from tests.sample_data import data1, kpis
 
@@ -23,6 +25,24 @@ class MetricTest(BaseTestClass):
                 metric_class.get_last_updated(company_id),
                 metric_class.query.all()[-1]
             )
+
+    def test_date_is_updated_when_data_changes(self):
+        company_id = self.get_id_from_POST(data1)
+
+        for metric in self.KPI:
+            for data in kpis[metric]:
+                self.KPI[metric](
+                    company_id=company_id,
+                    value=data,
+                ).save()
+
+        updated_time = Sale.get_last_updated(company_id).updated_at
+
+        Sale.get_last_updated(company_id).value = 234
+        db.session.commit()
+        new_updated_time = Sale.get_last_updated(company_id).updated_at
+
+        self.assertNotEqual(updated_time, new_updated_time)
 
 
 class UserTest(BaseTestClass):

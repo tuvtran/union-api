@@ -38,6 +38,17 @@ class BaseTestClass(TestCase):
             content_type="application/json"
         )
 
+    def send_PUT(self, url, data):
+        return self.client.put(
+            url,
+            data=json.dumps(data),
+            content_type='application/json'
+        )
+
+    def GET_data(self, url):
+        response = self.client.get(url)
+        return json.loads(response.data.decode())
+
     def get_id_from_POST(self, data):
         return json.loads(
             self.send_POST('/companies', data).data.decode()

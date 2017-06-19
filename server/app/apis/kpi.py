@@ -3,6 +3,7 @@ from flask import (
     request,
 )
 
+from app import db
 from app.apis import kpi_blueprint as kpi
 from app.models import (
     Company,
@@ -88,3 +89,34 @@ def get_metric(company_id, metric):
             values
         ))
     })
+
+
+@kpi.route(
+    '/companies/<int:company_id>/update',
+    methods=['PUT']
+)
+def put_metric(company_id):
+    company = Company.query.get(company_id)
+
+    if not company:
+        return jsonify({
+            'status': 'failure',
+            'message': 'company not found'
+        }), 404
+
+    for metric in request.json:
+        # if there is no data in the database
+        if KPI[metric].query.count() == 0:
+            return jsonify({
+                'status': 'failure',
+                'message': 'there is no data to update'
+            }), 400
+
+    for metric in request.json:
+        KPI[metric].get_last_updated(company_id).value = request.json[metric]
+        db.session.commit()
+
+    return jsonify({
+        'status': 'success',
+        'message': 'resource updated'
+    }), 200

@@ -59,7 +59,10 @@ class BaseMetric(db.Model):
     value = db.Column(db.Float, nullable=False)
     week = db.Column(db.Integer, nullable=False)
     updated_at = db.Column(
-        db.DateTime, nullable=False, default=db.func.current_timestamp())
+        db.DateTime, nullable=False,
+        default=db.func.current_timestamp(),
+        onupdate=db.func.current_timestamp()
+    )
 
     def save(self):
         last = self.__class__.query.filter_by(company_id=self.company_id)\
