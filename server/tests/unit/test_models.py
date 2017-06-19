@@ -97,3 +97,26 @@ class UserTest(BaseTestClass):
         self.assertEqual(
             User.query.count(),
             Founder.query.filter_by(company_id=company_id).count())
+
+    def test_decode_auth_token(self):
+        user = User(
+            name="Staff",
+            email="staff@brandery.org",
+            password="staff"
+        )
+        user.save()
+        auth_token = user.encode_auth_token(user.id)
+        self.assertTrue(isinstance(auth_token, bytes))
+        # here user.id is 1
+        self.assertTrue(User.decode_auth_token(auth_token) == 1)
+
+    def test_check_hashed_password(self):
+        user = User(
+            name="Staff",
+            email="staff@brandery.org",
+            password="staff"
+        )
+        user.save()
+        self.assertTrue(bcrypt.check_password_hash(
+            user.password, 'staff'
+        ))
