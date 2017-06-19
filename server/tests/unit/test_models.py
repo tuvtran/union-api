@@ -1,7 +1,11 @@
 # server/tests/unit/test_models.py
 
 from app import db
-from app.models import Sale
+from app.models import (
+    Company,
+    Sale,
+    # User
+)
 from tests.base import BaseTestClass
 from tests.sample_data import data1, kpis
 
@@ -46,4 +50,15 @@ class MetricTest(BaseTestClass):
 
 
 class UserTest(BaseTestClass):
-    pass
+
+    def test_encode_auth_token(self):
+        user = User(
+            email="tu@brandery.org",
+            password="test"
+        )
+        user.save()
+        auth_token = user.encode_auth_token(user.id)
+        self.asserTrue(isinstance(auth_token, bytes))
+
+    # def test_save_founder_automatically_save_user(self):
+    #     Company()
