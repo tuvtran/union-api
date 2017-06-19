@@ -11,8 +11,7 @@ class KpiUpdateTest(BaseTestClass):
         company_id = self.get_id_from_POST(data1)
         self.send_POST(f'/companies/{company_id}', data=self.kpi_for_week())
 
-        first_data = self.GET_data(f'/companies/{company_id}/sales')
-        print(first_data['last_updated'])
+        # first_data = self.GET_data(f'/companies/{company_id}/sales')
 
         response = self.send_PUT(
             f'/companies/{company_id}/update',
@@ -25,7 +24,6 @@ class KpiUpdateTest(BaseTestClass):
         self.assertIn('resource updated', response_['message'])
 
         second_data = self.GET_data(f'/companies/{company_id}/sales')
-        print(second_data['last_updated'])
 
         # self.assertNotEqual(
         #     first_data['last_updated'],

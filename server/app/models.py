@@ -1,6 +1,10 @@
 # server/app/models.py
 
-from app import db
+import os
+import jwt
+import datetime
+from app import db, bcrypt
+from flask import current_app
 from sqlalchemy.ext.declarative import declared_attr
 
 
@@ -38,6 +42,7 @@ class Founder(db.Model):
         unique=True
     )
     role = db.Column(db.String(255))
+    user_info = db.relationship('User', backref='founder_info')
 
     def __repr__(self):
         return f'<{self.name} ({self.role}) - {self.email}>'
@@ -45,6 +50,53 @@ class Founder(db.Model):
     def save(self):
         db.session.add(self)
         db.session.commit()
+
+        User(
+            name=self.name, email=self.email,
+            founder_id=self.id, password="founder").save()
+
+
+class User(db.Model):
+
+    __tablename__ = 'users'
+    id = db.Column(db.Integer, primary_key=True)
+    founder_id = db.Column(
+        db.Integer, db.ForeignKey('founders.id')
+    )
+    name = db.Column(db.String(255))
+    email = db.Column(db.String(255), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    registered_on = db.Column(
+        db.DateTime, nullable=False, default=db.func.current_timestamp())
+    staff = db.Column(db.Boolean, nullable=False, default=False)
+
+    def __repr__(self):
+        return f'<User: {self.email}>'
+
+    def save(self):
+        self.password = bcrypt.generate_password_hash(
+            self.password, os.environ.get('BCRYPT_LOG_ROUNDS', 4)
+        ).decode()
+
+        db.session.add(self)
+        db.session.commit()
+
+    def encode_auth_token(self, user_id):
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow() +
+                datetime.timedelta(days=0, minutes=5),
+                'iat': datetime.datetime.utcnow(),
+                'sub': user_id
+            }
+
+            return jwt.encode(
+                payload,
+                current_app.config['SECRET'],
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
 
 
 class BaseMetric(db.Model):
