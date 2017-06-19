@@ -23,7 +23,7 @@ Verb | Description
 - [x] `GET /companies/{company_id}/{metric}`
 - [x] `POST /companies`
 - [x] `POST /companies/{company_id}`
-- [ ] `PUT /companies/{company_id}/update`
+- [x] `PUT /companies/{company_id}/update`
 - [ ] `POST /auth/login`
 - [ ] `POST /auth/change`
 - [ ] `GET /auth/status`

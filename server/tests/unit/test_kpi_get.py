@@ -24,6 +24,13 @@ class KpiGETTest(BaseTestClass):
         self.assertIn('failure', response_['status'])
         self.assertIn('company not found', response_['message'])
 
+    def test_get_data_when_there_is_no_data(self):
+        company_id = self.get_id_from_POST(data1)
+        response = self.client.get(f'/companies/{company_id}/sales')
+        self.assertEqual(response.status_code, 200)
+        response_ = json.loads(response.data.decode())
+        self.assertEqual(response_['weeks'], 0)
+
     def test_get_data_one_week(self):
         company_id = self.get_id_from_POST(data1)
         data = self.kpi_for_week()
