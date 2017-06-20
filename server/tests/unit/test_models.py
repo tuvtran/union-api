@@ -95,7 +95,8 @@ class UserTest(BaseTestClass):
         company_id = self.get_id_from_POST(data1)
         self.assertGreater(User.query.count(), 0)
         self.assertEqual(
-            User.query.count(),
+            User.query.count() - 1,
+            # We don't count the staff user
             Founder.query.filter_by(company_id=company_id).count())
 
     def test_decode_auth_token(self):

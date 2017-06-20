@@ -15,3 +15,4 @@ class TestCurrentAppConfigurations(BaseTestClass):
             self.app.config['SQLALCHEMY_DATABASE_URI'],
             'postgresql://localhost/test_db'
         )
+        self.assertEqual(self.app.config['EXP'], 2)

@@ -114,6 +114,12 @@ def login():
         }), 500
 
 
+@auth.route('/auth/logout', methods=['POST'])
+@protected_route
+def logout(resp=None):
+    pass
+
+
 @auth.route('/auth/status', methods=['GET'])
 @protected_route
 def user_status(resp=None):

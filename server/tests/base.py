@@ -37,6 +37,9 @@ class BaseTestClass(TestCase):
             'emails': kpis['emails'][week],
         }
 
+    def get_authorized_header(self, token):
+        return dict(Authorization=f'Bearer {token}')
+
     def get_auth_token(self, staff=False, company_id=None):
         if staff:
             auth = self.send_POST('auth/register', {
@@ -79,8 +82,15 @@ class BaseTestClass(TestCase):
         return json.loads(response.data.decode())
 
     def get_id_from_POST(self, data):
+        # Because we are creating a new company, we need
+        # to log in as staff
+        auth_token = self.get_auth_token(staff=True)
         return json.loads(
-            self.send_POST('/companies', data).data.decode()
+            self.send_POST(
+                '/companies',
+                data,
+                headers=self.get_authorized_header(auth_token)
+            ).data.decode()
         )['id']
 
     def create_app(self):

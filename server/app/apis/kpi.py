@@ -94,10 +94,7 @@ def get_metric(company_id, metric):
     })
 
 
-@kpi.route(
-    '/companies/<int:company_id>/update',
-    methods=['PUT']
-)
+@kpi.route('/companies/<int:company_id>/update', methods=['PUT'])
 def put_metric(company_id):
     company = Company.query.get(company_id)
 

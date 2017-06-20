@@ -9,6 +9,7 @@ class Config(object):
     CSRF_ENABLE = True
     SECRET = os.getenv('SECRET')
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    EXP = 3000
 
 
 class DevelopmentConfig(Config):
@@ -22,6 +23,7 @@ class TestingConfig(Config):
     PRESERVE_CONTEXT_ON_EXCEPTION = False
     SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/test_db'
     DEBUG = True
+    EXP = 2
 
 
 class StagingConfig(Config):
