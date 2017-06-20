@@ -24,9 +24,9 @@ Verb | Description
 - [x] `POST /companies`
 - [x] `POST /companies/{company_id}`
 - [x] `PUT /companies/{company_id}/update`
-- [ ] `POST /auth/login`
+- [x] `POST /auth/login`
 - [ ] `POST /auth/change`
-- [ ] `GET /auth/status`
+- [x] `GET /auth/status`
 - [ ] `POST /auth/logout`
 
 
@@ -36,13 +36,13 @@ Verb | Description
 
  Method | Endpoint | Usage | Returns | Authentication
 ---------|----------|--------- | ---------- | ---------
- GET | `/companies` | Get all companies' information | Arrays of companies | OAuth
- GET | `/companies/{company_id}` | Get a company information | Object including name, founders' email and bio | OAuth
- GET | `/companies/{company_id}?fields={name,emails,website,bio}` | Get a company information based on particular parameters | Object including fields specified in the request parameter | OAuth
- GET | `/companies/{company_id}/{metric}` | Get a company's weekly metric information | Company's name and sales | OAuth
- POST | `/companies` | Create a new company | success/error message and company object | OAuth
- POST | `/companies/{company_id}` | Add KPI metrics to a company | success/error message and the metrics recently added | OAuth
- PUT | `/companies/{company_id}/update` | Update a company's metric (value and updated_at field) | success/error message and data recently updated | OAuth
+ GET | `/companies` | Get all companies' information | Arrays of companies | Staff
+ GET | `/companies/{company_id}` | Get a company information | Object including name, founders' email and bio | Staff and non-staff
+ GET | `/companies/{company_id}?fields={name,emails,website,bio}` | Get a company information based on particular parameters | Object including fields specified in the request parameter | Staff and non-staff
+ GET | `/companies/{company_id}/{metric}` | Get a company's weekly metric information | Company's name and sales | Staff and non-staff
+ POST | `/companies` | Create a new company | success/error message and company object | Staff
+ POST | `/companies/{company_id}` | Add KPI metrics to a company | success/error message and the metrics recently added | Staff and non-staff
+ PUT | `/companies/{company_id}/update` | Update a company's metric (value and updated_at field) | success/error message and data recently updated | Staff and non-staff
 
 ### Authentication API:
 
@@ -54,6 +54,12 @@ Verb | Description
  POST | `/auth/logout` | Log out | status and message | OAuth
 
 ## Sample Data Format:
+
+### Authorization:
+
+```http
+Authorization: Bearer {{auth_token}}
+```
 
 ### `GET /companies`
 
@@ -242,7 +248,28 @@ TODO
 
 ### `GET /auth/status`
 
-TODO
+#### Return format:
+On success:
+```json
+{
+    "status": "success",
+    "data": {
+        "user_id": 12,
+        "email": "staff@brandery.org",
+        "company": "The Brandery",
+        "registered_on": "Tue, Jun 20 2017",
+        "staff": true
+    }
+}
+```
+
+On failure:
+```json
+{
+    "status": "failure",
+    "message": "unauthorized"
+}
+```
 
 ### `POST /auth/logout`
 
