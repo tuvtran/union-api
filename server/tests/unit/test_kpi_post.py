@@ -64,7 +64,7 @@ class KpiPOSTTest(BaseTestClass):
             data=data
         )
         response_ = json.loads(response.data.decode())
-        self.assert200(response)
+        self.assertEqual(response.status_code, 201)
         self.assertIn('success', response_['status'])
         self.assertIn('metrics added', response_['message'])
         self.assertIn('metrics_added', response_)
@@ -81,7 +81,7 @@ class KpiPOSTTest(BaseTestClass):
             }
         )
         response_ = json.loads(response.data.decode())
-        self.assert200(response)
+        self.assertEqual(response.status_code, 201)
         self.assertIn('success', response_['status'])
         self.assertIn('metrics added', response_['message'])
         self.assertEqual(response_['metrics_added']['sales'], 123)

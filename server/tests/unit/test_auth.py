@@ -6,7 +6,7 @@ from tests.base import BaseTestClass
 from tests.sample_data import data1
 
 
-class AuthTest(BaseTestClass):
+class AuthLoginTest(BaseTestClass):
 
     def test_login_user_does_not_exist(self):
         response = self.send_POST('/auth/login', {
@@ -88,3 +88,53 @@ class AuthTest(BaseTestClass):
         self.assertIn('failure', response_['status'])
         self.assertIn(
             'wrong password or user does not exist', response_['message'])
+
+
+class AuthRegisterTest(BaseTestClass):
+
+    def test_register_empty_request(self):
+        response = self.send_POST('/auth/register', {})
+        self.assert400(response)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('failure', response_['status'])
+        self.assertIn('invalid register request', response_['message'])
+
+    def test_register_lacking_field(self):
+        response = self.send_POST('/auth/register', {
+            'email': 'staff@brandery.org'
+        })
+        self.assert400(response)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('failure', response_['status'])
+        self.assertIn('invalid register request', response_['message'])
+
+    def test_register_email_exists(self):
+        self.send_POST('/auth/register', {
+            'email': 'tu@demo.com',
+            'password': 'test123'
+        })
+        response = self.send_POST('/auth/register', {
+            'email': 'tu@demo.com',
+            'password': 'test123'
+        })
+        self.assertEqual(response.status_code, 202)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('failure', response_['status'])
+        self.assertIn('user exists. log in instead', response_['message'])
+
+    def test_register_successfully(self):
+        response = self.send_POST('auth/register', {
+            'email': 'staff@brandery.org',
+            'password': 'staff'
+        })
+        self.assertEqual(response.status_code, 201)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('success', response_['status'])
+        self.assertIn('successfully registered', response_['message'])
+        self.assertIn('auth_token', response_)
+
+
+class AuthUserTest(BaseTestClass):
+
+    def test_view_user_status(self):
+        pass

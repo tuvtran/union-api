@@ -60,7 +60,7 @@ def post_company(company_id):
     response_data['status'] = 'success'
     response_data['message'] = 'metrics added'
 
-    return jsonify(response_data), 200
+    return jsonify(response_data), 201
 
 
 @kpi.route('/companies/<int:company_id>/<string:metric>', methods=['GET'])
