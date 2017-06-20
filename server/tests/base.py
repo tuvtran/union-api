@@ -3,7 +3,13 @@
 import json
 from flask_testing import TestCase
 from app import create_app, db
-from app.models import Sale, Customer, Traffic, Email
+from app.models import (
+    Founder,
+    Sale,
+    Customer,
+    Traffic,
+    Email
+)
 from tests.sample_data import kpis
 
 
@@ -31,10 +37,33 @@ class BaseTestClass(TestCase):
             'emails': kpis['emails'][week],
         }
 
-    def send_POST(self, url, data):
+    def get_auth_token(self, staff=False, company_id=None):
+        if staff:
+            auth = self.send_POST('auth/register', {
+                'email': 'tu@example.com',
+                'password': 'test',
+                'staff': True
+            })
+        elif not staff and company_id:
+            Founder(
+                name="Tu",
+                email="tu@example.com",
+                role="CEO",
+                company_id=company_id
+            ).save()
+            auth = self.send_POST('auth/login', {
+                'email': 'tu@example.com',
+                'password': 'founder',
+                'staff': False
+            })
+
+        return json.loads(auth.data.decode())['auth_token']
+
+    def send_POST(self, url, data, headers=None):
         return self.client.post(
             url,
             data=json.dumps(data),
+            headers=headers,
             content_type="application/json"
         )
 

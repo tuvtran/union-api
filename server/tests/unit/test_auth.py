@@ -144,12 +144,7 @@ class AuthUserTest(BaseTestClass):
         self.assertIn('unauthorized', response_['message'])
 
     def test_logged_in(self):
-        auth = self.send_POST('auth/register', {
-            'email': 'tu@example.com',
-            'password': 'test',
-            'staff': True
-        })
-        auth_token = json.loads(auth.data.decode())['auth_token']
+        auth_token = self.get_auth_token(staff=True)
         response = self.client.get(
             '/auth/status',
             headers=dict(
