@@ -123,7 +123,7 @@ class AuthRegisterTest(BaseTestClass):
         self.assertIn('user exists. log in instead', response_['message'])
 
     def test_register_successfully(self):
-        response = self.send_POST('auth/register', {
+        response = self.send_POST('/auth/register', {
             'email': 'staff@brandery.org',
             'password': 'staff'
         })
@@ -136,5 +136,31 @@ class AuthRegisterTest(BaseTestClass):
 
 class AuthUserTest(BaseTestClass):
 
-    def test_view_user_status(self):
-        pass
+    def test_not_logged_in(self):
+        response = self.client.get('auth/status')
+        self.assert401(response)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('failure', response_['status'])
+        self.assertIn('unauthorized', response_['message'])
+
+    def test_logged_in(self):
+        auth = self.send_POST('auth/register', {
+            'email': 'tu@example.com',
+            'password': 'test',
+            'staff': True
+        })
+        auth_token = json.loads(auth.data.decode())['auth_token']
+        response = self.client.get(
+            '/auth/status',
+            headers=dict(
+                Authorization=f'Bearer {auth_token}'
+            ))
+        self.assert200(response)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('success', response_['status'])
+        self.assertIn('data', response_)
+        self.assertIn('user_id', response_['data'])
+        self.assertIn('email', response_['data'])
+        self.assertIn('company', response_['data'])
+        self.assertIn('registered_on', response_['data'])
+        self.assertIn('staff', response_['data'])
