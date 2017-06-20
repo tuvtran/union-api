@@ -10,7 +10,8 @@ from sqlalchemy.exc import IntegrityError
 
 from app import db
 from app.apis import companies_blueprint as company
-from app.models import Company, Founder
+from app.apis.auth import protected_route
+from app.models import Company, Founder, User
 
 
 def get_all_companies():
@@ -75,10 +76,18 @@ def create_company():
 
 
 @company.route('/companies', methods=['GET', 'POST'])
-def companies():
+@protected_route
+def companies(resp=None):
     """GET to retrieve all the companies
     POST to create a new company
     """
+    user = User.query.get(resp)
+    if not user.staff:
+        return jsonify({
+            'status': 'failure',
+            'message': 'non-staff members not allowed'
+        }), 401
+
     if request.method == 'GET':
         return get_all_companies()
     elif request.method == 'POST':

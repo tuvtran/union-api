@@ -65,7 +65,9 @@ class CompanyGETTest(BaseTestClass):
 
     def test_get_all_companies_0(self):
         """>\t With no company in database"""
-        response = self.client.get('/companies')
+        auth_token = self.get_auth_token(staff=True)
+        response = self.client.get(
+            '/companies', headers=self.get_authorized_header(auth_token))
         self.assertEqual(response.status_code, 200)
         response_ = json.loads(response.data.decode())
         self.assertEqual(response_['total'], 0)
@@ -73,10 +75,15 @@ class CompanyGETTest(BaseTestClass):
 
     def test_get_all_companies_3(self):
         """>\t With 3 companies in the database"""
-        for data in [data1, data2, data3]:
-            self.send_POST('/companies', data)
+        auth_token = self.get_auth_token(staff=True)
 
-        response = self.client.get('/companies')
+        for data in [data1, data2, data3]:
+            self.send_POST(
+                '/companies', data,
+                headers=self.get_authorized_header(auth_token))
+
+        response = self.client.get(
+            '/companies', headers=self.get_authorized_header(auth_token))
         response_ = json.loads(response.data.decode())
 
         self.assertIn('total', response_)

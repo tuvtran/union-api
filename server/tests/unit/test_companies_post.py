@@ -9,30 +9,39 @@ from app.models import Company, Founder
 class CompanyPOSTTest(BaseTestClass):
 
     def test_send_wrong_HTTP_requests(self):
+        auth_token = self.get_auth_token(staff=True)
         response1 = self.client.put(
             '/companies',
-            data=''
+            data='',
+            headers=self.get_authorized_header(auth_token)
         )
         self.assertEqual(response1.status_code, 405)
 
         response2 = self.client.delete(
-            '/companies'
+            '/companies',
+            headers=self.get_authorized_header(auth_token)
         )
         self.assertEqual(response2.status_code, 405)
 
     def test_send_empty_POST_request(self):
-        response = self.send_POST('/companies', '')
+        auth_token = self.get_auth_token(staff=True)
+        response = self.send_POST(
+            '/companies', '', headers=self.get_authorized_header(auth_token))
         self.assertEqual(response.status_code, 400)
 
     def test_send_POST_request_without_name(self):
+        auth_token = self.get_auth_token(staff=True)
         response = self.send_POST('/companies', {
-            'bio': 'Random bio'
-        })
+            'bio': 'Random bio',
+        }, headers=self.get_authorized_header(auth_token))
         self.assertEqual(response.status_code, 400)
 
     def test_create_a_new_company_database(self):
         """>\tSee if data is in database"""
-        response = self.send_POST('/companies', data1)
+        auth_token = self.get_auth_token(staff=True)
+        response = self.send_POST(
+            '/companies', data1,
+            headers=self.get_authorized_header(auth_token))
         self.assertEqual(response.status_code, 201)
         company = Company.query.first()
 
@@ -52,7 +61,10 @@ class CompanyPOSTTest(BaseTestClass):
 
     def test_can_create_a_company_message(self):
         """>\tSee if returns the appropriate message"""
-        response = self.send_POST('/companies', data1)
+        auth_token = self.get_auth_token(staff=True)
+        response = self.send_POST(
+            '/companies', data1,
+            headers=self.get_authorized_header(auth_token))
         response_ = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 201)
         self.assertIn('success', response_['status'])
@@ -60,8 +72,13 @@ class CompanyPOSTTest(BaseTestClass):
         self.assertIn('id', response_)
 
     def test_cannot_add_duplicate_companies(self):
-        self.send_POST('/companies', data1)
-        response = self.send_POST('/companies', data1)
+        auth_token = self.get_auth_token(staff=True)
+        self.send_POST(
+            '/companies', data1,
+            headers=self.get_authorized_header(auth_token))
+        response = self.send_POST(
+            '/companies', data1,
+            headers=self.get_authorized_header(auth_token))
 
         self.assertEqual(response.status_code, 400)
         response_ = json.loads(response.data.decode())

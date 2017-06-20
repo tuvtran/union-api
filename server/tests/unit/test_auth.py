@@ -5,7 +5,7 @@ import time
 import unittest
 from app.models import User
 from tests.base import BaseTestClass
-from tests.sample_data import data1
+from tests.sample_data import data1, data2
 
 
 class AuthLoginTest(BaseTestClass):
@@ -204,3 +204,43 @@ class AuthUserTest(BaseTestClass):
         self.assertIn('company', response_['data'])
         self.assertIn('registered_on', response_['data'])
         self.assertIn('staff', response_['data'])
+
+
+class AuthCompanyApiTest(BaseTestClass):
+
+    def test_non_staff_not_allowed_to_get_all_companies(self):
+        company_id = self.get_id_from_POST(data1)
+        auth_token = self.get_auth_token(staff=False, company_id=company_id)
+        response = self.client.get(
+            '/companies', headers=self.get_authorized_header(auth_token))
+        self.assert401(response)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('failure', response_['status'])
+        self.assertIn('non-staff members not allowed', response_['message'])
+
+    def test_not_logged_in_get_all_companies(self):
+        response = self.client.get(
+            '/companies')
+        self.assert401(response)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('failure', response_['status'])
+        self.assertIn('unauthorized', response_['message'])
+
+    def test_non_staff_not_allowed_to_create_company(self):
+        self.get_id_from_POST(data1)
+        auth_token = self.get_auth_token(staff=False, company_id=1)
+        response = self.send_POST(
+            '/companies', data=data2,
+            headers=self.get_authorized_header(auth_token))
+        self.assert401(response)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('failure', response_['status'])
+        self.assertIn('non-staff members not allowed', response_['message'])
+
+    def test_not_logged_in_create_company(self):
+        response = self.send_POST(
+            '/companies', data=data2)
+        self.assert401(response)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('failure', response_['status'])
+        self.assertIn('unauthorized', response_['message'])

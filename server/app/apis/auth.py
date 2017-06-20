@@ -53,7 +53,7 @@ def register():
     name = request.json.get('name')
     email = request.json['email']
     password = request.json['password']
-    staff = True if request.json.get('staff') == 'True' else False
+    staff = True if request.json.get('staff') else False
 
     user = User.query.filter_by(email=email).first()
     if user:

@@ -43,7 +43,7 @@ class BaseTestClass(TestCase):
     def get_auth_token(self, staff=False, company_id=None):
         if staff:
             auth = self.send_POST('auth/register', {
-                'email': 'tu@example.com',
+                'email': 'staff@example.com',
                 'password': 'test',
                 'staff': True
             })
@@ -88,7 +88,7 @@ class BaseTestClass(TestCase):
         return json.loads(
             self.send_POST(
                 '/companies',
-                data,
+                data=data,
                 headers=self.get_authorized_header(auth_token)
             ).data.decode()
         )['id']
