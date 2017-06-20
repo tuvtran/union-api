@@ -5,6 +5,7 @@ from flask_testing import TestCase
 from app import create_app, db
 from app.models import (
     Founder,
+    User,
     Sale,
     Customer,
     Traffic,
@@ -42,10 +43,15 @@ class BaseTestClass(TestCase):
 
     def get_auth_token(self, staff=False, company_id=None):
         if staff:
-            auth = self.send_POST('auth/register', {
+            User(
+                name="Staff",
+                email="staff@example.com",
+                password="test",
+                staff=True
+            ).save()
+            auth = self.send_POST('auth/login', {
                 'email': 'staff@example.com',
                 'password': 'test',
-                'staff': True
             })
         elif not staff and company_id:
             Founder(
@@ -59,7 +65,6 @@ class BaseTestClass(TestCase):
                 'password': 'founder',
                 'staff': False
             })
-
         return json.loads(auth.data.decode())['auth_token']
 
     def send_POST(self, url, data, headers=None):

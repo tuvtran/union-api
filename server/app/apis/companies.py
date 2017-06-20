@@ -97,7 +97,8 @@ def companies(resp=None):
 
 
 @company.route('/companies/<int:company_id>', methods=['GET'])
-def get_company(company_id):
+@protected_route
+def get_company(company_id, resp=None):
     company = Company.query.get(company_id)
 
     if not company:
@@ -105,6 +106,15 @@ def get_company(company_id):
             'status': 'failure',
             'message': 'company not found'
         }), 404
+
+    user = User.query.get(resp)
+    if not user.staff \
+        and (not user.founder_info
+             or user.founder_info.company_id != company_id):
+        return jsonify({
+            'status': 'failure',
+            'message': 'user not authorized to this view'
+        }), 401
 
     data = {
         'id': company.id,

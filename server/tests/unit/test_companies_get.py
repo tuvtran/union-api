@@ -13,7 +13,10 @@ from app.models import Company, Founder
 class CompanyGETTest(BaseTestClass):
 
     def test_send_invalid_id(self):
-        response = self.client.get('/companies/999999')
+        auth_token = self.get_auth_token(staff=True)
+        response = self.client.get(
+            '/companies/999999',
+            headers=self.get_authorized_header(auth_token))
         response_ = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 404)
         self.assertIn('failure', response_['status'])
@@ -28,8 +31,12 @@ class CompanyGETTest(BaseTestClass):
         demo.save()
         company_id = Company.query.first().id
 
+        auth_token = self.get_auth_token(staff=True)
+
         # GET request
-        response = self.client.get(f'/companies/{company_id}')
+        response = self.client.get(
+            f'/companies/{company_id}',
+            headers=self.get_authorized_header(auth_token))
         self.assertEqual(response.status_code, 200)
         response_ = json.loads(response.data.decode())
         self.assertEqual(response_['name'], data1['name'])
@@ -47,6 +54,9 @@ class CompanyGETTest(BaseTestClass):
         # Add founders into the database
         # with reference to the newly created company
         company_id = Company.query.first().id
+
+        auth_token = self.get_auth_token(staff=True)
+
         for founder in data1['founders']:
             Founder(
                 company_id=company_id,
@@ -56,7 +66,9 @@ class CompanyGETTest(BaseTestClass):
             ).save()
 
         # GET request
-        response = self.client.get(f'/companies/{company_id}')
+        response = self.client.get(
+            f'/companies/{company_id}',
+            headers=self.get_authorized_header(auth_token))
         self.assertEqual(response.status_code, 200)
         response_ = json.loads(response.data.decode())
         self.assertIn('founders', response_)

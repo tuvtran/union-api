@@ -244,3 +244,16 @@ class AuthCompanyApiTest(BaseTestClass):
         response_ = json.loads(response.data.decode())
         self.assertIn('failure', response_['status'])
         self.assertIn('unauthorized', response_['message'])
+
+    def test_different_employee_get_a_company(self):
+        company_id1 = self.get_id_from_POST(data1)
+        auth_token1 = self.get_auth_token(staff=False, company_id=company_id1)
+        company_id2 = self.get_id_from_POST(data2)
+        response = self.client.get(
+            f'/companies/{company_id2}',
+            headers=self.get_authorized_header(auth_token1)
+        )
+        self.assert401(response)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('failure', response_['status'])
+        self.assertIn('user not authorized to this view', response_['message'])
