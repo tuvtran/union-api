@@ -1,6 +1,7 @@
 # server/app/__init__.py
 
 from flask import Flask
+from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 
@@ -13,6 +14,9 @@ db = SQLAlchemy()
 # initialize bcrypt
 bcrypt = Bcrypt()
 
+# initialize CORS
+cors = CORS()
+
 
 def create_app(config_name):
     app = Flask(__name__, instance_relative_config=True)
@@ -22,6 +26,7 @@ def create_app(config_name):
 
     db.init_app(app)
     bcrypt.init_app(app)
+    cors.init_app(app)
 
     from app.apis import (
         auth_blueprint,

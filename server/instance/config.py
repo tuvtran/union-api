@@ -9,6 +9,7 @@ class Config(object):
     CSRF_ENABLE = True
     SECRET = os.getenv('SECRET')
     SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+    CORS_HEADERS = 'Content-Type'
     EXP = 3000
 
 

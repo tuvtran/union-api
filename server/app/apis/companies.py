@@ -76,7 +76,7 @@ def create_company():
 
 
 @company.route('/companies', methods=['GET', 'POST'])
-@protected_route
+# @protected_route
 def companies(resp=None):
     """GET to retrieve all the companies
     POST to create a new company
@@ -97,7 +97,7 @@ def companies(resp=None):
 
 
 @company.route('/companies/<int:company_id>', methods=['GET'])
-@protected_route
+# @protected_route
 def get_company(company_id, resp=None):
     company = Company.query.get(company_id)
 
