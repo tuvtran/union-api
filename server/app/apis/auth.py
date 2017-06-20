@@ -99,7 +99,12 @@ def login():
                 return jsonify({
                     'status': 'success',
                     'message': 'successfully logged in',
-                    'auth_token': auth_token.decode()
+                    'auth_token': auth_token.decode(),
+                    'user_id': user.id,
+                    'company': user.founder_info.company.name
+                    if user.founder_info else 'The Brandery',
+                    'registered_on': user.registered_on,
+                    'staff': user.staff,
                 }), 200
         else:
             return jsonify({
