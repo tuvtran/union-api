@@ -5,7 +5,8 @@ from flask import (
     request,
 )
 
-from app import bcrypt
+import os
+from app import bcrypt, db
 from app.apis import auth_blueprint as auth
 from app.models import User
 
@@ -141,3 +142,31 @@ def user_status(resp=None):
             'staff': user.staff,
         }
     }), 200
+
+
+@auth.route('/auth/change', methods=['PUT'])
+@protected_route
+def change(resp=None):
+    user = User.query.get(resp)
+
+    new_email = request.json['new_email']
+    old_password = request.json['old_password']
+    new_password = request.json['new_password']
+
+    if bcrypt.check_password_hash(user.password, old_password):
+        user.password = bcrypt.generate_password_hash(
+            new_password, os.environ.get('BCRYPT_LOG_ROUNDS', 4)
+        ).decode()
+        if new_email != user.email:
+            user.email = new_email
+        db.session.commit()
+
+        return jsonify({
+            'status': 'success',
+            'message': 'successfully changed login information'
+        }), 200
+    else:
+        return jsonify({
+            'status': 'failure',
+            'message': 'old password is incorrect'
+        }), 400
