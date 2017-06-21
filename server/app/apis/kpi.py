@@ -9,6 +9,7 @@ from app import db
 from app.apis import kpi_blueprint as kpi
 from app.apis.auth import protected_route
 from app.models import (
+    User,
     Company,
     Sale,
     Customer,
@@ -27,6 +28,15 @@ KPI = {
 @kpi.route('/companies/<int:company_id>', methods=['POST'])
 @protected_route
 def post_company(company_id, resp=None):
+    user = User.query.get(resp)
+    if not user.staff \
+        and (not user.founder_info
+             or user.founder_info.company_id != company_id):
+        return jsonify({
+            'status': 'failure',
+            'message': 'user not authorized to this view'
+        }), 401
+
     if not request.json:
         return jsonify({
             'status': 'failure',
@@ -68,6 +78,15 @@ def post_company(company_id, resp=None):
 @kpi.route('/companies/<int:company_id>/metrics', methods=['GET'])
 @protected_route
 def get_metrics(company_id, resp=None):
+    user = User.query.get(resp)
+    if not user.staff \
+        and (not user.founder_info
+             or user.founder_info.company_id != company_id):
+        return jsonify({
+            'status': 'failure',
+            'message': 'user not authorized to this view'
+        }), 401
+
     company = Company.query.get(company_id)
     if not company:
         return jsonify({
@@ -99,6 +118,15 @@ def get_metrics(company_id, resp=None):
 @kpi.route('/companies/<int:company_id>/update', methods=['PUT'])
 @protected_route
 def put_metric(company_id, resp=None):
+    user = User.query.get(resp)
+    if not user.staff \
+        and (not user.founder_info
+             or user.founder_info.company_id != company_id):
+        return jsonify({
+            'status': 'failure',
+            'message': 'user not authorized to this view'
+        }), 401
+
     company = Company.query.get(company_id)
 
     if not company:

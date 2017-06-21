@@ -68,4 +68,39 @@ class AuthCompanyApiTest(BaseTestClass):
 
 
 class AuthKpiApiTest(BaseTestClass):
-    pass
+
+    def test_the_right_user_can_add_metrics(self):
+        company_id = self.get_id_from_POST(data1)
+        auth_token = self.get_auth_token(staff=False, company_id=company_id)
+        response = self.send_POST(
+            f'/companies/{company_id}',
+            data=self.kpi_for_week(),
+            headers=self.get_authorized_header(auth_token))
+        self.assertEqual(response.status_code, 201)
+
+    def test_wrong_user_cannot_add_metrics(self):
+        company_id1 = self.get_id_from_POST(data1)
+        company_id2 = self.get_id_from_POST(data2)
+        auth_token1 = self.get_auth_token(staff=False, company_id=company_id1)
+        response = self.send_POST(
+            f'/companies/{company_id2}',
+            data=self.kpi_for_week(),
+            headers=self.get_authorized_header(auth_token1)
+        )
+        self.assert401(response)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('failure', response_['status'])
+        self.assertIn('user not authorized to this view', response_['message'])
+
+    def test_wrong_user_cannot_view_metrics(self):
+        company_id1 = self.get_id_from_POST(data1)
+        company_id2 = self.get_id_from_POST(data2)
+        auth_token1 = self.get_auth_token(staff=False, company_id=company_id1)
+        response = self.client.get(
+            f'/companies/{company_id2}/metrics',
+            headers=self.get_authorized_header(auth_token1)
+        )
+        self.assert401(response)
+        response_ = json.loads(response.data.decode())
+        self.assertIn('failure', response_['status'])
+        self.assertIn('user not authorized to this view', response_['message'])
