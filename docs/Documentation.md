@@ -25,9 +25,9 @@ Verb | Description
 - [x] `POST /companies/{company_id}`
 - [x] `PUT /companies/{company_id}/metrics`
 - [x] `POST /auth/login`
-- [ ] `POST /auth/change`
+- [x] `POST /auth/change`
 - [x] `GET /auth/status`
-- [ ] `POST /auth/logout`
+- [x] `POST /auth/logout` (Implemented by frontend side)
 
 
 ## API Endpoints:
