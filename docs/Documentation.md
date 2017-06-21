@@ -39,7 +39,7 @@ Verb | Description
  GET | `/companies` | Get all companies' information | Arrays of companies | Staff
  GET | `/companies/{company_id}` | Get a company information | Object including name, founders' email and bio | Staff and non-staff
  GET | `/companies/{company_id}?fields={name,emails,website,bio}` | Get a company information based on particular parameters | Object including fields specified in the request parameter | Staff and non-staff
- GET | `/companies/{company_id}/{metric}` | Get a company's weekly metric information | Company's name and sales | Staff and non-staff
+ GET | `/companies/{company_id}/metrics` | Get a company's weekly metrics information | Company's name and sales | Staff and non-staff
  POST | `/companies` | Create a new company | success/error message and company object | Staff
  POST | `/companies/{company_id}` | Add KPI metrics to a company | success/error message and the metrics recently added | Staff and non-staff
  PUT | `/companies/{company_id}/update` | Update a company's metric (value and updated_at field) | success/error message and data recently updated | Staff and non-staff
@@ -125,15 +125,26 @@ Authorization: Bearer {{auth_token}}
 }
 ```
 
-### `GET /companies/{company_id}/{metric}`
+### `GET /companies/{company_id}/metrics`
 
 #### Return format:
 ```json
 {
-    "weeks": 4,
-    // "%a, %d %b %Y %H:%M:%S GMT"
-    "last_updated": "Fri, 16 Jun 2017 15:57:23 GMT",
-    "data": [12, 34, 56, 23]
+    "sales": {
+        "weeks": 4,
+        // "%a, %d %b %Y %H:%M:%S GMT"
+        "last_updated": "Fri, 16 Jun 2017 15:57:23 GMT",
+        "data": [12, 34, 56, 23]
+    },
+    "customers": {
+        // same as above
+    },
+    "traffic": {
+        // same as above
+    },
+    "emails": {
+        // same as above
+    },
 }
 ```
 
