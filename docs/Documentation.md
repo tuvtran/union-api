@@ -255,7 +255,32 @@ On failure:
 
 ### `POST /auth/change`
 
-TODO
+#### Request body:
+```json
+{
+    "new_email": "john.average@example.com",
+    "old_password": "thisisold",
+    "new_password": "thisisnew",
+}
+```
+
+#### Return format:
+
+On success:
+```json
+{
+    "status": "success",
+    "message": "successfully changed password"
+}
+```
+
+On failure:
+```json
+{
+    "status": "failure",
+    "message": "old password is incorrect
+}
+```
 
 ### `GET /auth/status`
 
