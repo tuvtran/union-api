@@ -7,6 +7,7 @@ from flask import (
 
 from app import db
 from app.apis import kpi_blueprint as kpi
+from app.apis.auth import protected_route
 from app.models import (
     Company,
     Sale,
@@ -24,7 +25,8 @@ KPI = {
 
 
 @kpi.route('/companies/<int:company_id>', methods=['POST'])
-def post_company(company_id):
+@protected_route
+def post_company(company_id, resp=None):
     if not request.json:
         return jsonify({
             'status': 'failure',
@@ -64,7 +66,8 @@ def post_company(company_id):
 
 
 @kpi.route('/companies/<int:company_id>/metrics', methods=['GET'])
-def get_metrics(company_id):
+@protected_route
+def get_metrics(company_id, resp=None):
     company = Company.query.get(company_id)
     if not company:
         return jsonify({
@@ -94,7 +97,8 @@ def get_metrics(company_id):
 
 
 @kpi.route('/companies/<int:company_id>/update', methods=['PUT'])
-def put_metric(company_id):
+@protected_route
+def put_metric(company_id, resp=None):
     company = Company.query.get(company_id)
 
     if not company:

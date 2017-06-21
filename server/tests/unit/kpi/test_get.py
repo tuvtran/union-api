@@ -1,4 +1,4 @@
-# server/tests/unit/test_kpi_get.py
+# server/tests/unit/kpi/test_get.py
 
 import json
 import datetime
@@ -13,29 +13,39 @@ class KpiGETTest(BaseTestClass):
     time_formatter = "%a, %d %b %Y %H:%M:%S GMT"
 
     def test_get_data_invalid_id(self):
-        response = self.client.get('/companies/123/metrics')
+        auth_token = self.get_auth_token(staff=True)
+        response = self.client.get(
+            '/companies/123/metrics',
+            headers=self.get_authorized_header(auth_token))
         response_ = json.loads(response.data.decode())
         self.assert404(response)
         self.assertIn('failure', response_['status'])
         self.assertIn('company not found', response_['message'])
 
     def test_get_data_when_there_is_no_data(self):
+        auth_token = self.get_auth_token(staff=True)
         company_id = self.get_id_from_POST(data1)
-        response = self.client.get(f'/companies/{company_id}/metrics')
+        response = self.client.get(
+            f'/companies/{company_id}/metrics',
+            headers=self.get_authorized_header(auth_token))
         self.assertEqual(response.status_code, 200)
         response_ = json.loads(response.data.decode())
         for metric in response_:
             self.assertEqual(response_[metric]['weeks'], 0)
 
     def test_get_data_one_week(self):
+        auth_token = self.get_auth_token(staff=True)
         company_id = self.get_id_from_POST(data1)
         data = self.kpi_for_week()
         self.send_POST(
             f'/companies/{company_id}',
-            data=data
+            data=data,
+            headers=self.get_authorized_header(auth_token)
         )
 
-        response = self.client.get(f'/companies/{company_id}/metrics')
+        response = self.client.get(
+            f'/companies/{company_id}/metrics',
+            headers=self.get_authorized_header(auth_token))
         response_ = json.loads(response.data.decode())
 
         self.assert200(response)
@@ -58,15 +68,19 @@ class KpiGETTest(BaseTestClass):
             )
 
     def test_get_data_many_weeks(self):
+        auth_token = self.get_auth_token(staff=True)
         company_id = self.get_id_from_POST(data1)
 
         for i in range(4):
             self.send_POST(
                 f'/companies/{company_id}',
-                data=self.kpi_for_week(i)
+                data=self.kpi_for_week(i),
+                headers=self.get_authorized_header(auth_token)
             )
 
-        response = self.client.get(f'/companies/{company_id}/metrics')
+        response = self.client.get(
+            f'/companies/{company_id}/metrics',
+            headers=self.get_authorized_header(auth_token))
         response_ = json.loads(response.data.decode())
 
         self.assert200(response)

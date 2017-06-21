@@ -1,4 +1,4 @@
-# server/tests/unit/test_kpi_api.py
+# server/tests/unit/kpi/test_post.py
 
 import json
 from app.models import Sale, Customer, Traffic, Email
@@ -9,11 +9,13 @@ from tests.sample_data import data1, kpis
 class KpiPOSTTest(BaseTestClass):
 
     def test_post_empty_metrics(self):
+        auth_token = self.get_auth_token(staff=True)
         company_id = self.get_id_from_POST(data1)
 
         response = self.send_POST(
             f'/companies/{company_id}',
-            data=''
+            data='',
+            headers=self.get_authorized_header(auth_token)
         )
 
         response_ = json.loads(response.data.decode())
@@ -23,6 +25,7 @@ class KpiPOSTTest(BaseTestClass):
         self.assertIn('empty metrics', response_['message'])
 
     def test_one_of_the_metrics_is_empty(self):
+        auth_token = self.get_auth_token(staff=True)
         company_id = self.get_id_from_POST(data1)
 
         # The assumption is that it's okay to add only 2 or 3
@@ -35,7 +38,8 @@ class KpiPOSTTest(BaseTestClass):
                 'customers': '',
                 'traffic': kpis['traffic'][0],
                 'emails': kpis['emails'][0],
-            }
+            },
+            headers=self.get_authorized_header(auth_token)
         )
         response_ = json.loads(response.data.decode())
 
@@ -47,7 +51,10 @@ class KpiPOSTTest(BaseTestClass):
         )
 
     def test_post_to_invalid_company(self):
-        response = self.send_POST('/companies/1233', data=self.kpi_for_week(0))
+        auth_token = self.get_auth_token(staff=True)
+        response = self.send_POST(
+            '/companies/1233', data=self.kpi_for_week(0),
+            headers=self.get_authorized_header(auth_token))
 
         self.assert404(response)
 
@@ -57,11 +64,13 @@ class KpiPOSTTest(BaseTestClass):
 
     def test_post_all_kpis_to_company_message(self):
         """>\tPOST all the KPIs successfully and returns the correct message"""
+        auth_token = self.get_auth_token(staff=True)
         company_id = self.get_id_from_POST(data1)
         data = self.kpi_for_week()
         response = self.send_POST(
             f'/companies/{company_id}',
-            data=data
+            data=data,
+            headers=self.get_authorized_header(auth_token)
         )
         response_ = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 201)
@@ -73,12 +82,14 @@ class KpiPOSTTest(BaseTestClass):
 
     def test_post_one_kpi_to_company_message(self):
         """>\tPOST just one KPI successfully and returns the correct message"""
+        auth_token = self.get_auth_token(staff=True)
         company_id = self.get_id_from_POST(data1)
         response = self.send_POST(
             f'/companies/{company_id}',
             data={
                 'sales': 123
-            }
+            },
+            headers=self.get_authorized_header(auth_token)
         )
         response_ = json.loads(response.data.decode())
         self.assertEqual(response.status_code, 201)
@@ -88,11 +99,13 @@ class KpiPOSTTest(BaseTestClass):
 
     def test_post_all_kpis_to_company_database(self):
         """>\tPOST all the KPIs successfully and adds data to the database"""
+        auth_token = self.get_auth_token(staff=True)
         company_id = self.get_id_from_POST(data1)
         data = self.kpi_for_week()
         self.send_POST(
             f'/companies/{company_id}',
-            data=data
+            data=data,
+            headers=self.get_authorized_header(auth_token)
         )
         sale = Sale.query.filter_by(company_id=company_id)
         customers = Customer.query.filter_by(company_id=company_id)
@@ -104,12 +117,14 @@ class KpiPOSTTest(BaseTestClass):
         self.assertEqual(emails[0].value, data['emails'])
 
     def test_post_one_kpi_to_company_database(self):
+        auth_token = self.get_auth_token(staff=True)
         company_id = self.get_id_from_POST(data1)
         self.send_POST(
             f'/companies/{company_id}',
             data={
                 'sales': 123
-            }
+            },
+            headers=self.get_authorized_header(auth_token)
         )
         sale = Sale.query.filter_by(company_id=company_id)
         customers = Customer.query.filter_by(company_id=company_id).first()
@@ -123,12 +138,14 @@ class KpiPOSTTest(BaseTestClass):
     def test_post_all_kpis_to_company_many_weeks_database(self):
         """>\tPOST all the KPIs over the span of 4 weeks and
         check if the database has the information"""
+        auth_token = self.get_auth_token(staff=True)
         company_id = self.get_id_from_POST(data1)
 
         for i in range(4):
             self.send_POST(
                 f'/companies/{company_id}',
-                data=self.kpi_for_week(i)
+                data=self.kpi_for_week(i),
+                headers=self.get_authorized_header(auth_token)
             )
 
         sale = Sale.query.filter_by(company_id=company_id)

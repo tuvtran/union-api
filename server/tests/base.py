@@ -75,15 +75,16 @@ class BaseTestClass(TestCase):
             content_type="application/json"
         )
 
-    def send_PUT(self, url, data):
+    def send_PUT(self, url, data, headers=None):
         return self.client.put(
             url,
             data=json.dumps(data),
-            content_type='application/json'
+            headers=headers,
+            content_type='application/json',
         )
 
-    def GET_data(self, url):
-        response = self.client.get(url)
+    def GET_data(self, url, headers=None):
+        response = self.client.get(url, headers=headers)
         return json.loads(response.data.decode())
 
     def get_id_from_POST(self, data):
