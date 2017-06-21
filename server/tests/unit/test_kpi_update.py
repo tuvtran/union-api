@@ -11,8 +11,6 @@ class KpiUpdateTest(BaseTestClass):
         company_id = self.get_id_from_POST(data1)
         self.send_POST(f'/companies/{company_id}', data=self.kpi_for_week())
 
-        # first_data = self.GET_data(f'/companies/{company_id}/sales')
-
         response = self.send_PUT(
             f'/companies/{company_id}/update',
             self.kpi_for_week(1)
@@ -23,17 +21,13 @@ class KpiUpdateTest(BaseTestClass):
         self.assertIn('success', response_['status'])
         self.assertIn('resource updated', response_['message'])
 
-        second_data = self.GET_data(f'/companies/{company_id}/sales')
+        second_data = self.GET_data(f'/companies/{company_id}/metrics')
 
-        # self.assertNotEqual(
-        #     first_data['last_updated'],
-        #     second_data['last_updated']
-        # )
-
-        self.assertEqual(
-            second_data['data'][0],
-            self.kpi_for_week(1)['sales']
-        )
+        for metric in second_data:
+            self.assertEqual(
+                self.kpi_for_week(1)[metric],
+                second_data[metric]['data'][0]
+            )
 
     def test_update_when_there_is_no_data(self):
         company_id = self.get_id_from_POST(data1)
@@ -68,9 +62,10 @@ class KpiUpdateTest(BaseTestClass):
         self.assertIn('success', response_['status'])
         self.assertIn('resource updated', response_['message'])
 
-        updated_data = self.GET_data(f'/companies/{company_id}/sales')
+        updated_data = self.GET_data(f'/companies/{company_id}/metrics')
 
-        self.assertEqual(
-            updated_data['data'][~0],
-            self.kpi_for_week(2)['sales']
-        )
+        for metric in updated_data:
+            self.assertEqual(
+                self.kpi_for_week(2)[metric],
+                updated_data[metric]['data'][~0]
+            )

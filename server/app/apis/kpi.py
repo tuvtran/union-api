@@ -63,8 +63,8 @@ def post_company(company_id):
     return jsonify(response_data), 201
 
 
-@kpi.route('/companies/<int:company_id>/<string:metric>', methods=['GET'])
-def get_metric(company_id, metric):
+@kpi.route('/companies/<int:company_id>/metrics', methods=['GET'])
+def get_metrics(company_id):
     company = Company.query.get(company_id)
     if not company:
         return jsonify({
@@ -72,26 +72,25 @@ def get_metric(company_id, metric):
             'message': 'company not found'
         }), 404
 
-    if metric not in KPI:
-        return jsonify({
-            'status': 'failure',
-            'message': 'metric does not exist'
-        }), 404
+    response_obj = {}
 
-    kpi_query = KPI[metric].query.filter_by(company_id=company_id)
-    total_weeks = kpi_query.count()
-    values = kpi_query.order_by(KPI[metric].week).all()
-    last_updated = KPI[metric].get_last_updated(company_id).updated_at \
-        if KPI[metric].get_last_updated(company_id) else 'NOT AVAILABLE'
+    for metric in KPI:
+        kpi_query = KPI[metric].query.filter_by(company_id=company_id)
+        total_weeks = kpi_query.count()
+        values = kpi_query.order_by(KPI[metric].week).all()
+        last_updated = KPI[metric].get_last_updated(company_id).updated_at \
+            if KPI[metric].get_last_updated(company_id) else 'NOT AVAILABLE'
 
-    return jsonify({
-        'weeks': total_weeks,
-        'last_updated': last_updated,
-        'data': list(map(
-            lambda value: value.value,
-            values
-        ))
-    })
+        response_obj[metric] = {
+            'weeks': total_weeks,
+            'last_updated': last_updated,
+            'data': list(map(
+                lambda value: value.value,
+                values
+            ))
+        }
+
+    return jsonify(response_obj), 200
 
 
 @kpi.route('/companies/<int:company_id>/update', methods=['PUT'])

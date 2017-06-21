@@ -60,6 +60,10 @@ class AuthLoginTest(BaseTestClass):
         self.assert200(response)
         response_ = json.loads(response.data.decode())
         self.assertIn('auth_token', response_)
+        self.assertIn('registered_on', response_)
+        self.assertIn('company', response_)
+        self.assertIn('company_id', response_)
+        self.assertIn('staff', response_)
         self.assertIn('success', response_['status'])
         self.assertIn('successfully logged in', response_['message'])
 
@@ -126,7 +130,7 @@ class AuthLogoutTest(BaseTestClass):
 
     def test_expired_token(self):
         auth_token = self.get_auth_token(staff=True)
-        time.sleep(4)
+        time.sleep(3)
         response = self.send_POST(
             '/auth/logout',
             data=None,
@@ -257,3 +261,12 @@ class AuthCompanyApiTest(BaseTestClass):
         response_ = json.loads(response.data.decode())
         self.assertIn('failure', response_['status'])
         self.assertIn('user not authorized to this view', response_['message'])
+
+    def test_respective_employee_allowed_to_one_company(self):
+        company_id = self.get_id_from_POST(data1)
+        auth_token = self.get_auth_token(staff=False, company_id=company_id)
+        response = self.client.get(
+            f'/companies/{company_id}',
+            headers=self.get_authorized_header(auth_token)
+        )
+        self.assert200(response)
