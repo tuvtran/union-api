@@ -23,7 +23,7 @@ Verb | Description
 - [x] `GET /companies/{company_id}/{metric}`
 - [x] `POST /companies`
 - [x] `POST /companies/{company_id}`
-- [x] `PUT /companies/{company_id}/update`
+- [x] `PUT /companies/{company_id}/metrics`
 - [x] `POST /auth/login`
 - [ ] `POST /auth/change`
 - [x] `GET /auth/status`
@@ -42,7 +42,7 @@ Verb | Description
  GET | `/companies/{company_id}/metrics` | Get a company's weekly metrics information | Company's name and sales | Staff and non-staff
  POST | `/companies` | Create a new company | success/error message and company object | Staff
  POST | `/companies/{company_id}` | Add KPI metrics to a company | success/error message and the metrics recently added | Staff and non-staff
- PUT | `/companies/{company_id}/update` | Update a company's metric (value and updated_at field) | success/error message and data recently updated | Staff and non-staff
+ PUT | `/companies/{company_id}/metrics` | Update a company's metric (value and updated_at field) | success/error message and data recently updated | Staff and non-staff
 
 ### Authentication API:
 

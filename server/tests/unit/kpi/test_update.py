@@ -15,7 +15,7 @@ class KpiUpdateTest(BaseTestClass):
             headers=self.get_authorized_header(auth_token))
 
         response = self.send_PUT(
-            f'/companies/{company_id}/update',
+            f'/companies/{company_id}/metrics',
             self.kpi_for_week(1),
             headers=self.get_authorized_header(auth_token)
         )
@@ -39,7 +39,7 @@ class KpiUpdateTest(BaseTestClass):
         auth_token = self.get_auth_token(staff=True)
         company_id = self.get_id_from_POST(data1)
         response = self.send_PUT(
-            f'/companies/{company_id}/update',
+            f'/companies/{company_id}/metrics',
             self.kpi_for_week(),
             headers=self.get_authorized_header(auth_token)
         )
@@ -52,7 +52,7 @@ class KpiUpdateTest(BaseTestClass):
     def test_update_to_invalid_id(self):
         auth_token = self.get_auth_token(staff=True)
         response = self.send_PUT(
-            '/companies/123/update', self.kpi_for_week(),
+            '/companies/123/metrics', self.kpi_for_week(),
             headers=self.get_authorized_header(auth_token))
         self.assert404(response)
         response_ = json.loads(response.data.decode())
@@ -69,7 +69,7 @@ class KpiUpdateTest(BaseTestClass):
             f'/companies/{company_id}', self.kpi_for_week(1),
             headers=self.get_authorized_header(auth_token))
         response = self.send_PUT(
-            f'/companies/{company_id}/update',
+            f'/companies/{company_id}/metrics',
             self.kpi_for_week(2),
             headers=self.get_authorized_header(auth_token)
         )

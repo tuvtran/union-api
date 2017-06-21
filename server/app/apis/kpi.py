@@ -115,7 +115,7 @@ def get_metrics(company_id, resp=None):
     return jsonify(response_obj), 200
 
 
-@kpi.route('/companies/<int:company_id>/update', methods=['PUT'])
+@kpi.route('/companies/<int:company_id>/metrics', methods=['PUT'])
 @protected_route
 def put_metric(company_id, resp=None):
     user = User.query.get(resp)
