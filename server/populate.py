@@ -60,4 +60,83 @@ companies = [
         happy teams and clients!""",
         'website': 'https://www.consultmates.com/'
     },
+    {
+        'name': 'Tame The Beast',
+        'founders': [
+            {
+                'name': 'John Cascarano',
+                'email': 'beast@getbeast.com',
+                'role': 'CEO'
+            },
+        ],
+        'bio': """Tame the Beast® is deep Northwoods air, raw glacier waters
+        and the fruits of the arousing jungle. It's boldness, adventure and
+        lumberjack confidence. It's feeling as exceptionally fresh, energized
+        and alive as a roaring beast.""",
+        'website': 'https://www.getbeast.com/'
+    },
+    {
+        'name': 'Jumper Threads',
+        'founders': [
+            {
+                'name': 'Daniel Redlinger',
+                'email': 'daniel@jumperthreads.com',
+                'role': 'CEO'
+            },
+            {
+                'name': 'Andrew Mallett',
+                'email': 'andy@sagaouterwear.com',
+                'role': 'Advisor'
+            },
+        ],
+        'bio': """Founded by a former paratrooper and US Army Ranger, JUMPER
+        was created to design and manufacture everyday basic apparel products
+        quite simply… better!  The idea was that although an $8 undershirt has
+        its place in the world, people want designs and textiles for basic
+        products that look good, feel good, and truly work.""",
+        'website': 'https://www.jumperthreads.com/'
+    },
+    {
+        'name': 'Obe Pet Products',
+        'founders': [
+            {
+                'name': 'Hilary Wade Jensen',
+                'email': 'hilary@obedog.com',
+                'role': 'CEO'
+            },
+        ],
+        'bio': """Obe makes smart products that make the day to day care of pets
+        effortless. So parents can do what they really want: spend more time with
+        their pets. Jean Kao and Hilary Jensen founded Obe to help their pets
+        live the longest, healthiest lives possible.  Jean has an 18 year old cat
+        named Hera. Hilary has a 12 year old Mutt Fantastic named Speedy and a
+        Muttweiler named DJ.""",
+        'website': 'https://www.obedog.com/'
+    },
+    {
+        'name': 'Soapy Soap Co',
+        'founders': [
+            {
+                'name': 'Mohammed M. Mahdi',
+                'email': 'info@designmysoap.com ',
+                'role': 'Co-founder'
+            },
+            {
+                'name': 'Mohammed A. Mahdi',
+                'email': 'mohammed@designmysoap.com',
+                'role': 'Co-founder'
+            },
+            {
+                'name': 'Anthony Duncan',
+                'email': 'anthony@designmysoap.com',
+                'role': 'Co-founder'
+            },
+        ],
+        'bio': """DesignMySoap.com is brought to you by Soapy Soap Company, based
+        in Bloomington, Indiana. Started in 2012, Soapy Soap Company is owned and
+        operated by three best friends who live and work together around the
+        clock—brothers Mohammed A. and Mohammed M. Mahdi and Anthony Duncan. (The
+        soapmaking trio is pictured above from left to right.)""",
+        'website': 'https://www.designmysoap.com/'
+    },
 ]
