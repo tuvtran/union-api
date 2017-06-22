@@ -30,6 +30,7 @@ def get_all_companies():
                 },
                 startup.founders
             )),
+            'metrics': get_kpi_for_company(startup.id)
         }
 
     return jsonify({
