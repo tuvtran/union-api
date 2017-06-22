@@ -25,6 +25,28 @@ KPI = {
 }
 
 
+def get_kpi_for_company(company_id):
+    metric_field = {}
+
+    for metric in KPI:
+        kpi_query = KPI[metric].query.filter_by(company_id=company_id)
+        total_weeks = kpi_query.count()
+        values = kpi_query.order_by(KPI[metric].week).all()
+        last_updated = KPI[metric].get_last_updated(company_id).updated_at \
+            if KPI[metric].get_last_updated(company_id) else 'NOT AVAILABLE'
+
+        metric_field[metric] = {
+            'weeks': total_weeks,
+            'last_updated': last_updated,
+            'data': list(map(
+                lambda value: value.value,
+                values
+            ))
+        }
+
+    return metric_field
+
+
 @kpi.route('/companies/<int:company_id>', methods=['POST'])
 @protected_route
 def post_company(company_id, resp=None):
@@ -96,21 +118,7 @@ def get_metrics(company_id, resp=None):
 
     response_obj = {}
 
-    for metric in KPI:
-        kpi_query = KPI[metric].query.filter_by(company_id=company_id)
-        total_weeks = kpi_query.count()
-        values = kpi_query.order_by(KPI[metric].week).all()
-        last_updated = KPI[metric].get_last_updated(company_id).updated_at \
-            if KPI[metric].get_last_updated(company_id) else 'NOT AVAILABLE'
-
-        response_obj[metric] = {
-            'weeks': total_weeks,
-            'last_updated': last_updated,
-            'data': list(map(
-                lambda value: value.value,
-                values
-            ))
-        }
+    response_obj = get_kpi_for_company(company_id)
 
     return jsonify(response_obj), 200
 

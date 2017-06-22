@@ -10,6 +10,7 @@ from sqlalchemy.exc import IntegrityError
 
 from app import db
 from app.apis import companies_blueprint as company
+from app.apis.kpi import get_kpi_for_company
 from app.apis.auth import protected_route
 from app.models import Company, Founder, User
 
@@ -99,7 +100,22 @@ def companies(resp=None):
 @company.route('/companies/<int:company_id>', methods=['PUT'])
 @protected_route
 def update_companies(company_id, resp=None):
-    pass
+    user = User.query.get(resp)
+    if not user.staff \
+        and (not user.founder_info
+             or user.founder_info.company_id != company_id):
+        return jsonify({
+            'status': 'failure',
+            'message': 'user not authorized to this view'
+        }), 401
+
+    company = Company.query.get(company_id)
+
+    if not company:
+        return jsonify({
+            'status': 'failure',
+            'message': 'company not found'
+        }), 404
 
 
 @company.route('/companies/<int:company_id>', methods=['GET'])
@@ -136,4 +152,7 @@ def get_company(company_id, resp=None):
         )),
         'bio': company.bio
     }
-    return jsonify(data)
+
+    data['metrics'] = get_kpi_for_company(company_id)
+
+    return jsonify(data), 200
