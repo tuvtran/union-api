@@ -96,6 +96,12 @@ def companies(resp=None):
         return 405
 
 
+@company.route('/companies/<int:company_id>', methods=['PUT'])
+@protected_route
+def update_companies(company_id, resp=None):
+    pass
+
+
 @company.route('/companies/<int:company_id>', methods=['GET'])
 @protected_route
 def get_company(company_id, resp=None):
