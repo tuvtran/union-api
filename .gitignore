@@ -1,6 +1,9 @@
 # TODO list
 todo.txt
 
+# Metrics stuff cause it's not under version control
+metrics_stuff.txt
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
