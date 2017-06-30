@@ -14,14 +14,16 @@ class InterfacingFromBranderyTest(BaseTestClass):
         # Hoping the salary budget won't go to waste, he firsthand
         # decides to try fetching all the companies' info to see
         # if the tech interns are any good.
+        auth_token = self.get_auth_token(staff=True)
+        authorized_header = self.get_authorized_header(auth_token)
 
         # First, he needs to enters some mock data.
-        self.send_POST('/companies', data1)
-        self.send_POST('/companies', data2)
-        self.send_POST('/companies', data3)
+        self.send_POST('/companies', data1, headers=authorized_header)
+        self.send_POST('/companies', data2, headers=authorized_header)
+        self.send_POST('/companies', data3, headers=authorized_header)
 
         # Now he queries for all the companies' data
-        response = self.client.get('/companies')
+        response = self.client.get('/companies', headers=authorized_header)
         response_ = json.loads(response.data.decode())
         companies = response_['companies']
 

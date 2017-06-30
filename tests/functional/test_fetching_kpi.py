@@ -11,17 +11,14 @@ class KPITest(BaseTestClass):
         # Jane adds her startup to the database by sending
         # a POST request and get the company's id
         company_id = self.get_id_from_POST(data1)
+        auth_token = self.get_auth_token(staff=False, company_id=company_id)
 
         # Getting the company unique id in the database, she
         # adds the KPI tracking information for the first week.
         kpi_response = json.loads(self.send_POST(
             f'/companies/{company_id}',
-            data={
-                'sales': kpis['sales'][0],
-                'customers': kpis['customers'][0],
-                'traffic': kpis['traffic'][0],
-                'emails': kpis['emails'][0],
-            }
+            data=self.kpi_for_week(),
+            headers=self.get_authorized_header(auth_token)
         ).data.decode())
 
         # She sees that in the returned message, there
@@ -51,21 +48,15 @@ class KPITest(BaseTestClass):
 
         # Ensured they are equal, she now sends a GET request
         # as a last step to make sure
-        get_sales = json.loads(
-            self.client.get(f'/companies/{company_id}/sales').data.decode()
-        )
-        get_customers = json.loads(
-            self.client.get(f'/companies/{company_id}/customers').data.decode()
-        )
-        get_traffic = json.loads(
-            self.client.get(f'/companies/{company_id}/traffic').data.decode()
-        )
-        get_emails = json.loads(
-            self.client.get(f'/companies/{company_id}/emails').data.decode()
+        get_metrics = json.loads(
+            self.client.get(
+                f'/companies/{company_id}/metrics',
+                headers=self.get_authorized_header(auth_token)
+            ).data.decode()
         )
 
         # And check if the fields are all equal
-        self.assertEqual(get_sales['data'][~0], sales)
-        self.assertEqual(get_customers['data'][~0], customers)
-        self.assertEqual(get_traffic['data'][~0], traffic)
-        self.assertEqual(get_emails['data'][~0], emails)
+        self.assertEqual(get_metrics['sales']['data'][~0], sales)
+        self.assertEqual(get_metrics['customers']['data'][~0], customers)
+        self.assertEqual(get_metrics['traffic']['data'][~0], traffic)
+        self.assertEqual(get_metrics['emails']['data'][~0], emails)

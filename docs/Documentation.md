@@ -351,3 +351,12 @@ TODO
 - updated_at:   datetime
 - value:        double
 ```
+
+### Note (NoSQL database)
+```json
+{
+    "user_id": {
+        "table_name": "notes"
+    }
+}
+```
