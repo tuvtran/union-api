@@ -5,13 +5,13 @@ from fabric.api import env, local, run
 REPO_URL = 'https://github.com/tuvttran/union-api.git'
 
 
-def deploy(sitename, db_info):
+def deploy(sitename, db_info, app_settings="staging"):
     site_folder = f'/home/{env.user}/sites/{sitename}'
     source_folder = site_folder + '/source'
     _create_directory_structure_if_necessary(site_folder)
     _get_latest_source(source_folder)
     _update_virtualenv(source_folder)
-    _update_database(source_folder, db_info)
+    _update_database(source_folder, db_info, app_settings)
 
 
 def _create_directory_structure_if_necessary(site_folder):
@@ -32,16 +32,22 @@ def _update_virtualenv(source_folder):
     virtualenv_folder = source_folder + '/../virtualenv'
     if not exists(virtualenv_folder + '/bin/pip'):
         run(f'python3.6 -m venv {virtualenv_folder}')
+    run(f'{virtualenv_folder}/bin/pip install -U setuptools')
     run(f'{virtualenv_folder}/bin/pip install -r \
         {source_folder}/requirements.txt')
 
 
-def _update_database(source_folder, db_info):
+def _update_database(source_folder, db_info, app_settings="staging"):
     with shell_env(
         DATABASE_URL='postgresql://' + db_info,
-        APP_SETTINGS="staging"
+        APP_SETTINGS=app_settings
     ):
         run(
             f'cd {source_folder}'
             ' && ../virtualenv/bin/python manage.py db upgrade'
         )
+        if app_settings == "staging":
+            run(
+                f'cd {source_folder}'
+                ' && ../virtualenv/bin/python manage.py populate'
+            )
