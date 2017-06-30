@@ -138,15 +138,51 @@ Authorization: Bearer {{auth_token}}
         "last_updated": "Fri, 16 Jun 2017 15:57:23 GMT",
         "data": [12, 34, 56, 23]
     },
-    "customers": {
-        // same as above
-    },
     "traffic": {
         // same as above
     },
-    "emails": {
+    "subscribers": {
         // same as above
     },
+    "active_users": {
+        // same as above
+    },
+    "paying_users": {
+        // same as above
+    },
+    "engagement": {
+        // same as above
+    },
+    "mrr": {
+        // same as above
+    },
+    "cpa": {
+        // same as above
+    },
+    "pilots": {
+        // same as above
+    },
+    "product_releases": {
+        // same as above
+    },
+    "preorders": {
+        // same as above
+    },
+    "automation_percents": {
+        // same as above
+    },
+    "conversion_rate": {
+        // same as above
+    },
+    "marketing_spent": {
+        // same as above
+    },
+    "other_1": {
+        // same as above
+    },
+    "other_2": {
+        // same as above
+    }
 }
 ```
 
@@ -197,9 +233,21 @@ On failure:
 ```json
 {
     "sales": 123.7,
-    "customers": 23,
     "traffic": 950,
-    "emails": 500
+    "subscribers": 500,
+    "active_users": 500,
+    "paying_users": 23,
+    "engagement": 500,
+    "mrr": 500,
+    "cpa": 500,
+    "pilots": 500,
+    "product_releases": 500,
+    "preorders": 500,
+    "automation_percents": 500,
+    "conversion_rate": 500,
+    "marketing_spent": 500,
+    "other_1": 500,
+    "other_2": 500
 }
 ```
 **Note**: Any fields can be omitted but **cannot** be empty
@@ -212,9 +260,21 @@ On success:
     "message": "metrics added",
     "metrics_added": {
         "sales": 123.7,
-        "customers": 23,
         "traffic": 950,
-        "emails": 500
+        "subscribers": 500,
+        "active_users": 500,
+        "paying_users": 23,
+        "engagement": 500,
+        "mrr": 500,
+        "cpa": 500,
+        "pilots": 500,
+        "product_releases": 500,
+        "preorders": 500,
+        "automation_percents": 500,
+        "conversion_rate": 500,
+        "marketing_spent": 500,
+        "other_1": 500,
+        "other_2": 500
     }
 }
 ```
@@ -309,10 +369,6 @@ On failure:
 }
 ```
 
-### `POST /auth/logout`
-
-TODO
-
 ## Database Design:
 
 ### Company:
@@ -343,7 +399,24 @@ TODO
 - staff:        boolean
 ```
 
-### Metric (Sale, Customer, Traffic, Email):
+### Metric:
+Type of metrics:
+ - ActiveUser
+ - PayingUser
+ - Subscriber
+ - Engagement
+ - MRR (monthly recurring revenue)
+ - Sale
+ - Pilot
+ - Traffic
+ - ProductRelease
+ - Preorder
+ - AutomationPercentage
+ - CPA (cost per acquisition)
+ - ConversionRate
+ - MarketingSpent
+ - Other1
+ - Other2
 ```yaml
 - id:           integer
 - company_id:   integer  # Foreign Key to Company table
