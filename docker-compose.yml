@@ -1,0 +1,11 @@
+version: '3.3'
+
+services:
+
+  union-server-service:
+    container_name: union-server-service
+    build: .
+    volumes:
+      - '.:/usr/src/app'
+    ports:
+      - 5001:5000 # expose ports - HOST:CONTAINER
