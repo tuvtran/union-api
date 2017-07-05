@@ -44,7 +44,7 @@ companies = [
         'website': 'https://retargetlinks.com/'
     },
     {
-        'name': 'Arlo',
+        'name': 'Martin',
         'founders': [
             {
                 'name': 'Tanja Mimica',

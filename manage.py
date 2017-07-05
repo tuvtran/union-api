@@ -5,16 +5,12 @@ import random
 import unittest
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
-from populate import companies
+from populate import companies, KPI
 from app import db, create_app
 from app.models import (
     Company,
     Founder,
     User,
-    Sale,
-    Traffic,
-    Subscriber,
-    Preorder
 )
 
 app = create_app(config_name=os.environ.get('APP_SETTINGS'))
@@ -69,16 +65,12 @@ def populate():
 
         new_company.save()
 
-        for _ in range(7):
+        for _ in range(10):
             # Saving random metrics
-            Sale(
-                company_id=new_company.id, value=random.randint(0, 100)).save()
-            Subscriber(
-                company_id=new_company.id, value=random.randint(0, 100)).save()
-            Traffic(
-                company_id=new_company.id, value=random.randint(0, 100)).save()
-            Preorder(
-                company_id=new_company.id, value=random.randint(0, 100)).save()
+            for metric in KPI:
+                KPI[metric](
+                    company_id=new_company.id, value=random.randint(0, 100)
+                ).save()
 
         for founder in company['founders']:
             new_founder = Founder(
