@@ -31,6 +31,16 @@ class KpiGETTest(BaseTestClass):
         for metric in response_:
             self.assertEqual(response_[metric]['weeks'], 0)
 
+    def test_get_kpi_list(self):
+        auth_token = self.get_auth_token(staff=True)
+        response = self.client.get(
+            '/metrics', headers=self.get_authorized_header(auth_token)
+        )
+        self.assert200(response)
+        response_ = json.loads(response.data.decode())
+        for metric in self.KPI:
+            self.assertIn(metric, response_)
+
     def test_get_data_one_week(self):
         auth_token = self.get_auth_token(staff=True)
         company_id = self.get_id_from_POST(data1)

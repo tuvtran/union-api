@@ -21,6 +21,7 @@ Verb | Description
 - [x] `GET /companies/{company_id}`
 - [ ] `GET /companies/{company_id}?fields={name,emails,website,bio}`
 - [x] `GET /companies/{company_id}/{metric}`
+- [x] `GET /metrics`
 - [x] `POST /companies`
 - [x] `POST /companies/{company_id}`
 - [ ] `PUT /companies/{company_id}`
@@ -41,6 +42,7 @@ Verb | Description
  GET | `/companies/{company_id}` | Get a company information | Object including name, founders' email and bio | Staff and non-staff
  GET | `/companies/{company_id}?fields={name,emails,website,bio}` | Get a company information based on particular parameters | Object including fields specified in the request parameter | Staff and non-staff
  GET | `/companies/{company_id}/metrics` | Get a company's weekly metrics information | Company's name and sales | Staff and non-staff
+ GET | `/metrics` | Get a list of all the metrics | an object containing a metric's name | Staff and non-staff
  POST | `/companies` | Create a new company | success/error message and company object | Staff
  POST | `/companies/{company_id}` | Add KPI metrics to a company | success/error message and the metrics recently added | Staff and non-staff
  PUT | `/companies/{company_id}` | Update a company's information (name, website, bio and founder) | success/error message and data recently updated | Staff and non-staff
@@ -182,6 +184,62 @@ Authorization: Bearer {{auth_token}}
     },
     "other_2": {
         // same as above
+    }
+}
+```
+
+### `GET /metrics`
+
+#### Return format:
+```json
+{
+    "active_users": {
+        "name": "Active users"
+    },
+    "automation_percents": {
+        "name": "Percents of automation"
+    },
+    "conversion_rate": {
+        "name": "Conversion rate"
+    },
+    "cpa": {
+        "name": "Cost per acquisition"
+    },
+    "engagement": {
+        "name": "Engagement"
+    },
+    "marketing_spent": {
+        "name": "Marketing spent"
+    },
+    "mrr": {
+        "name": "Revenue"
+    },
+    "other_1": {
+        "name": "Other metric 1"
+    },
+    "other_2": {
+        "name": "Other metric 2"
+    },
+    "paying_users": {
+        "name": "Paying users"
+    },
+    "pilots": {
+        "name": "Pilots"
+    },
+    "preorders": {
+        "name": "Preorders"
+    },
+    "product_releases": {
+        "name": "Product releases"
+    },
+    "sales": {
+        "name": "Sales"
+    },
+    "subscribers": {
+        "name": "Subscribers"
+    },
+    "traffic": {
+        "name": "Traffic"
     }
 }
 ```

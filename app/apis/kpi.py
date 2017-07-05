@@ -11,7 +11,7 @@ from typing import Dict, Any, Tuple
 from app import db
 from app.apis import kpi_blueprint as kpi
 from app.apis.auth import protected_route
-from app.models import User, Company
+from app.models import User, Company, BaseMetric
 
 KPI: Dict[str, Any] = {
     'sales': app.models.Sale,
@@ -53,6 +53,27 @@ def get_kpi_for_company(company_id) -> Dict[str, Any]:
         }
 
     return metric_field
+
+
+@kpi.route('/metrics', methods=['GET'])
+@protected_route
+def get_metrics_list(resp: int = None) -> Tuple[object, int]:
+    if not User.query.get(resp):
+        return jsonify({
+            'status': 'failure',
+            'message': 'user not authorized to this view'
+        }), 401
+
+    response_obj = {}
+
+    # go through every subclass of BaseMetric
+    # and get the custom name
+    for Metric in BaseMetric.__subclasses__():
+        response_obj[Metric.__tablename__] = {
+            'name': Metric.get_custom_name()
+        }
+
+    return jsonify(response_obj), 200
 
 
 @kpi.route('/companies/<int:company_id>', methods=['POST'])

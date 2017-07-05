@@ -5,7 +5,8 @@ from app.models import (
     Company,
     Founder,
     Sale,
-    User
+    User,
+    BaseMetric
 )
 from tests.base import BaseTestClass
 from tests.sample_data import data1, kpis
@@ -121,3 +122,7 @@ class UserTest(BaseTestClass):
         self.assertTrue(bcrypt.check_password_hash(
             user.password, 'staff'
         ))
+
+    def test_custom_name_for_metric(self):
+        for Metric in BaseMetric.__subclasses__():
+            self.assertIsInstance(Metric.get_custom_name(), str)

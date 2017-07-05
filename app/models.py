@@ -1,6 +1,7 @@
 # server/app/models.py
 
 import os
+import abc
 import jwt
 import datetime
 from app import db, bcrypt
@@ -128,6 +129,7 @@ class User(db.Model):
 class BaseMetric(db.Model):
 
     __abstract__ = True
+    __metaclass__ = abc.ABCMeta
 
     @declared_attr
     def company_id(cls):
@@ -151,87 +153,156 @@ class BaseMetric(db.Model):
         db.session.commit()
 
     @classmethod
-    def get_last_updated(cls, company_id):
+    def get_last_updated(cls, company_id: int) -> object:
         """Return a data point that is last updated/created"""
         return cls.query.filter_by(company_id=company_id)\
             .order_by(cls.updated_at.desc()).first()
+
+    @abc.abstractclassmethod
+    def get_custom_name(cls) -> str:
+        """Return a user-friendly name"""
+        ...
 
 
 class Sale(BaseMetric):
 
     __tablename__ = 'sales'
 
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Sales'
+
 
 class Traffic(BaseMetric):
 
     __tablename__ = 'traffic'
+
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Traffic'
 
 
 class ActiveUser(BaseMetric):
 
     __tablename__ = 'active_users'
 
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Active users'
+
 
 class PayingUser(BaseMetric):
 
     __tablename__ = 'paying_users'
+
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Paying users'
 
 
 class Subscriber(BaseMetric):
 
     __tablename__ = 'subscribers'
 
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Subscribers'
+
 
 class Engagement(BaseMetric):
 
     __tablename__ = 'engagement'
+
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Engagement'
 
 
 class MRR(BaseMetric):
 
     __tablename__ = 'mrr'
 
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Revenue'
+
 
 class Pilot(BaseMetric):
 
     __tablename__ = 'pilots'
+
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Pilots'
 
 
 class ProductRelease(BaseMetric):
 
     __tablename__ = 'product_releases'
 
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Product releases'
+
 
 class Preorder(BaseMetric):
 
     __tablename__ = 'preorders'
+
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Preorders'
 
 
 class AutomationPercentage(BaseMetric):
 
     __tablename__ = 'automation_percents'
 
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Percents of automation'
+
 
 class CPA(BaseMetric):
 
     __tablename__ = 'cpa'
+
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Cost per acquisition'
 
 
 class ConversionRate(BaseMetric):
 
     __tablename__ = 'conversion_rate'
 
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Conversion rate'
+
 
 class MarketingSpent(BaseMetric):
 
     __tablename__ = 'marketing_spent'
+
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Marketing spent'
 
 
 class Other1(BaseMetric):
 
     __tablename__ = 'other_1'
 
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Other metric 1'
+
 
 class Other2(BaseMetric):
 
     __tablename__ = 'other_2'
+
+    @classmethod
+    def get_custom_name(cls) -> str:
+        return 'Other metric 2'
