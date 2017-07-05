@@ -32,7 +32,6 @@ def get_all_companies() -> Tuple[object, int]:
                 },
                 startup.founders
             )),
-            'metrics': get_kpi_for_company(startup.id)
         }
 
     return jsonify({
