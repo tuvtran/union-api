@@ -8,6 +8,8 @@ from flask import (
 )
 from sqlalchemy.exc import IntegrityError
 
+from typing import Dict, Tuple, Any
+
 from app import db
 from app.apis import companies_blueprint as company
 from app.apis.kpi import get_kpi_for_company
@@ -15,8 +17,8 @@ from app.apis.auth import protected_route
 from app.models import Company, Founder, User
 
 
-def get_all_companies():
-    companies = {}
+def get_all_companies() -> Tuple[object, int]:
+    companies: Dict[str, Dict[str, Any]] = {}
     for startup in Company.query.all():
         companies[startup.name] = {
             'id': startup.id,
@@ -39,12 +41,12 @@ def get_all_companies():
     }), 200
 
 
-def create_company():
+def create_company() -> Tuple[object, int]:
     # If data is empty or there is no field
     if not (request.json and 'name' in request.json):
         abort(400)
 
-    company = Company(
+    company: Company = Company(
         name=request.json['name'],
         bio=request.json['bio'],
         website=request.json['website'],
@@ -79,11 +81,11 @@ def create_company():
 
 @company.route('/companies', methods=['GET', 'POST'])
 @protected_route
-def companies(resp=None):
+def companies(resp: int = None) -> Tuple[object, int]:
     """GET to retrieve all the companies
     POST to create a new company
     """
-    user = User.query.get(resp)
+    user: User = User.query.get(resp)
     if not user.staff:
         return jsonify({
             'status': 'failure',
@@ -95,12 +97,15 @@ def companies(resp=None):
     elif request.method == 'POST':
         return create_company()
     else:
-        return 405
+        return jsonify({
+            'status': 'failure',
+            'message': 'method not allowed'
+        }), 405
 
 
 @company.route('/companies/<int:company_id>', methods=['PUT'])
 @protected_route
-def update_companies(company_id, resp=None):
+def update_companies(company_id: int, resp: int = None) -> Tuple[object, int]:
     user = User.query.get(resp)
     if not user.staff \
         and (not user.founder_info
@@ -118,10 +123,12 @@ def update_companies(company_id, resp=None):
             'message': 'company not found'
         }), 404
 
+    return jsonify({}), 201
+
 
 @company.route('/companies/<int:company_id>', methods=['GET'])
 @protected_route
-def get_company(company_id, resp=None):
+def get_company(company_id: int, resp: int = None) -> Tuple[object, int]:
     user = User.query.get(resp)
     if not user.staff \
         and (not user.founder_info

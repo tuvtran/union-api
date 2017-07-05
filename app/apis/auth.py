@@ -6,14 +6,15 @@ from flask import (
 )
 
 import os
+from typing import Callable, Any, Tuple
 from app import bcrypt, db
 from app.apis import auth_blueprint as auth
 from app.models import User
 
 
-def protected_route(fn):
+def protected_route(fn: Callable[..., object]) -> Callable:
     """Function decorator to wrap around protected endpoints"""
-    def protected_fn(*args, **kwargs):
+    def protected_fn(*args: Any, **kwargs: Any):
         auth_header = request.headers.get('Authorization')
         auth_token = auth_header.split(" ")[1] if auth_header else ''
 
@@ -39,7 +40,7 @@ def protected_route(fn):
 
 
 @auth.route('/auth/register', methods=['POST'])
-def register():
+def register() -> Tuple[object, int]:
     # empty request
     # request that does not contain either email or password
     # email or password field is empty
@@ -51,12 +52,12 @@ def register():
             'message': 'invalid register request'
         }), 400
 
-    name = request.json.get('name')
-    email = request.json['email']
-    password = request.json['password']
-    staff = True if request.json.get('staff') else False
+    name: str = request.json.get('name')
+    email: str = request.json['email']
+    password: str = request.json['password']
+    staff: bool = True if request.json.get('staff') else False
 
-    user = User.query.filter_by(email=email).first()
+    user: User = User.query.filter_by(email=email).first()
     if user:
         return jsonify({
             'status': 'failure',
@@ -74,7 +75,7 @@ def register():
 
 
 @auth.route('/auth/login', methods=['POST'])
-def login():
+def login() -> Tuple[object, int]:
     # empty request
     # request that does not contain either email or password
     # email or password field is empty
@@ -108,6 +109,11 @@ def login():
                     'registered_on': user.registered_on,
                     'staff': user.staff,
                 }), 200
+            else:
+                return jsonify({
+                    'status': 'failure',
+                    'message': 'internal server error'
+                }), 500
         else:
             return jsonify({
                 'status': 'failure',
@@ -123,14 +129,14 @@ def login():
 
 @auth.route('/auth/logout', methods=['POST'])
 @protected_route
-def logout(resp=None):
+def logout(resp: int = None):
     pass
 
 
 @auth.route('/auth/status', methods=['GET'])
 @protected_route
-def user_status(resp=None):
-    user = User.query.get(resp)
+def user_status(resp: int = None) -> Tuple[object, int]:
+    user: User = User.query.get(resp)
     return jsonify({
         'status': 'success',
         'data': {
@@ -146,12 +152,12 @@ def user_status(resp=None):
 
 @auth.route('/auth/change', methods=['PUT'])
 @protected_route
-def change(resp=None):
-    user = User.query.get(resp)
+def change(resp: int = None) -> Tuple[object, int]:
+    user: User = User.query.get(resp)
 
-    new_email = request.json['new_email']
-    old_password = request.json['old_password']
-    new_password = request.json['new_password']
+    new_email: str = request.json['new_email']
+    old_password: str = request.json['old_password']
+    new_password: str = request.json['new_password']
 
     if bcrypt.check_password_hash(user.password, old_password):
         user.password = bcrypt.generate_password_hash(

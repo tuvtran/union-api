@@ -6,12 +6,14 @@ from flask import (
     request,
 )
 
+from typing import Dict, Any, Tuple
+
 from app import db
 from app.apis import kpi_blueprint as kpi
 from app.apis.auth import protected_route
 from app.models import User, Company
 
-KPI = {
+KPI: Dict[str, Any] = {
     'sales': app.models.Sale,
     'traffic': app.models.Traffic,
     'subscribers': app.models.Subscriber,
@@ -31,7 +33,7 @@ KPI = {
 }
 
 
-def get_kpi_for_company(company_id):
+def get_kpi_for_company(company_id) -> Dict[str, Any]:
     metric_field = {}
 
     for metric in KPI:
@@ -55,7 +57,7 @@ def get_kpi_for_company(company_id):
 
 @kpi.route('/companies/<int:company_id>', methods=['POST'])
 @protected_route
-def post_company(company_id, resp=None):
+def post_company(company_id: int, resp: int = None) -> Tuple[object, int]:
     user = User.query.get(resp)
     if not user.staff \
         and (not user.founder_info
@@ -86,7 +88,7 @@ def post_company(company_id, resp=None):
             'message': 'company not found'
         }), 404
 
-    response_data = {
+    response_data: Dict[str, Any] = {
         'metrics_added': {}
     }
 
@@ -105,7 +107,7 @@ def post_company(company_id, resp=None):
 
 @kpi.route('/companies/<int:company_id>/metrics', methods=['GET'])
 @protected_route
-def get_metrics(company_id, resp=None):
+def get_metrics(company_id: int, resp: int = None) -> Tuple[object, int]:
     user = User.query.get(resp)
     if not user.staff \
         and (not user.founder_info
@@ -122,8 +124,6 @@ def get_metrics(company_id, resp=None):
             'message': 'company not found'
         }), 404
 
-    response_obj = {}
-
     response_obj = get_kpi_for_company(company_id)
 
     return jsonify(response_obj), 200
@@ -131,7 +131,7 @@ def get_metrics(company_id, resp=None):
 
 @kpi.route('/companies/<int:company_id>/metrics', methods=['PUT'])
 @protected_route
-def put_metric(company_id, resp=None):
+def put_metric(company_id: int, resp: int = None) -> Tuple[object, int]:
     user = User.query.get(resp)
     if not user.staff \
         and (not user.founder_info

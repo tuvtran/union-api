@@ -2,13 +2,14 @@
 
 import json
 import app.models
+from typing import Dict, Any, List
 from flask_testing import TestCase
 from app import create_app, db
 from tests.sample_data import kpis
 
 
 class BaseTestClass(TestCase):
-    KPI = {
+    KPI: Dict[str, object] = {
         'sales': app.models.Sale,
         'traffic': app.models.Traffic,
         'subscribers': app.models.Subscriber,
@@ -27,14 +28,14 @@ class BaseTestClass(TestCase):
         'other_2': app.models.Other2,
     }
 
-    metrics = [
+    metrics: List[str] = [
         'sales', 'traffic', 'subscribers',
         'active_users', 'paying_users', 'engagement',
         'mrr', 'cpa', 'pilots', 'product_releases', 'preorders',
         'automation_percents', 'conversion_rate', 'marketing_spent',
         'other_1', 'other_2']
 
-    def kpi_for_week(self, week=0):
+    def kpi_for_week(self, week: int = 0) -> Dict[str, Any]:
         assert week < min(list(map(
             len, [kpis[metric] for metric in kpis]
         )))
@@ -44,10 +45,11 @@ class BaseTestClass(TestCase):
 
         return return_obj
 
-    def get_authorized_header(self, token):
+    def get_authorized_header(self, token: str) -> Dict[str, str]:
         return dict(Authorization=f'Bearer {token}')
 
-    def get_auth_token(self, staff=False, company_id=None):
+    def get_auth_token(
+            self, staff: bool = False, company_id: int = None) -> str:
         if staff:
             app.models.User(
                 name="Staff",
@@ -73,7 +75,9 @@ class BaseTestClass(TestCase):
             })
         return json.loads(auth.data.decode())['auth_token']
 
-    def send_POST(self, url, data, headers=None):
+    def send_POST(
+            self, url: str, data: Dict[str, Any],
+            headers: str = None) -> object:
         return self.client.post(
             url,
             data=json.dumps(data),
@@ -81,7 +85,9 @@ class BaseTestClass(TestCase):
             content_type="application/json"
         )
 
-    def send_PUT(self, url, data, headers=None):
+    def send_PUT(
+            self, url: str, data: Dict[str, Any],
+            headers: str = None) -> object:
         return self.client.put(
             url,
             data=json.dumps(data),
@@ -89,11 +95,11 @@ class BaseTestClass(TestCase):
             content_type='application/json',
         )
 
-    def GET_data(self, url, headers=None):
+    def GET_data(self, url: str, headers: str = None) -> object:
         response = self.client.get(url, headers=headers)
         return json.loads(response.data.decode())
 
-    def get_id_from_POST(self, data):
+    def get_id_from_POST(self, data: Dict[str, Any]) -> int:
         # Because we are creating a new company, we need
         # to log in as staff
         auth_token = self.get_auth_token(staff=True)
@@ -108,10 +114,10 @@ class BaseTestClass(TestCase):
     def create_app(self):
         return create_app(config_name='testing')
 
-    def setUp(self):
+    def setUp(self) -> None:
         db.create_all()
         db.session.commit()
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         db.session.remove()
         db.drop_all()
