@@ -1,49 +1,55 @@
 # server/tests/base.py
 
 import json
+import app.models
 from flask_testing import TestCase
 from app import create_app, db
-from app.models import (
-    Founder,
-    User,
-    Sale,
-    Customer,
-    Traffic,
-    Email
-)
 from tests.sample_data import kpis
 
 
 class BaseTestClass(TestCase):
     KPI = {
-        'sales': Sale,
-        'customers': Customer,
-        'traffic': Traffic,
-        'emails': Email
+        'sales': app.models.Sale,
+        'traffic': app.models.Traffic,
+        'subscribers': app.models.Subscriber,
+        'engagement': app.models.Engagement,
+        'mrr': app.models.MRR,
+        'pilots': app.models.Pilot,
+        'active_users': app.models.ActiveUser,
+        'paying_users': app.models.PayingUser,
+        'cpa': app.models.CPA,
+        'product_releases': app.models.ProductRelease,
+        'preorders': app.models.Preorder,
+        'automation_percents': app.models.AutomationPercentage,
+        'conversion_rate': app.models.ConversionRate,
+        'marketing_spent': app.models.MarketingSpent,
+        'other_1': app.models.Other1,
+        'other_2': app.models.Other2,
     }
+
+    metrics = [
+        'sales', 'traffic', 'subscribers',
+        'active_users', 'paying_users', 'engagement',
+        'mrr', 'cpa', 'pilots', 'product_releases', 'preorders',
+        'automation_percents', 'conversion_rate', 'marketing_spent',
+        'other_1', 'other_2']
 
     def kpi_for_week(self, week=0):
         assert week < min(list(map(
-            len, [
-                kpis['sales'],
-                kpis['customers'],
-                kpis['traffic'],
-                kpis['emails']
-            ]
+            len, [kpis[metric] for metric in kpis]
         )))
-        return {
-            'sales': kpis['sales'][week],
-            'customers': kpis['customers'][week],
-            'traffic': kpis['traffic'][week],
-            'emails': kpis['emails'][week],
-        }
+        return_obj = {}
+        for metric in kpis:
+            return_obj[metric] = kpis[metric][week]
+
+        return return_obj
 
     def get_authorized_header(self, token):
         return dict(Authorization=f'Bearer {token}')
 
     def get_auth_token(self, staff=False, company_id=None):
         if staff:
-            User(
+            app.models.User(
                 name="Staff",
                 email="staff@example.com",
                 password="test",
@@ -54,7 +60,7 @@ class BaseTestClass(TestCase):
                 'password': 'test',
             })
         elif not staff and company_id:
-            Founder(
+            app.models.Founder(
                 name="Tu",
                 email="tu@example.com",
                 role="CEO",

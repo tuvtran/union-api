@@ -1,3 +1,5 @@
+import random
+
 data1 = {
     'name': 'Demo',
     'founders': [
@@ -62,9 +64,13 @@ data3 = {
     'bio': "We specialize in making humans less stupid."
 }
 
-kpis = {
-    'sales': [30.2, 40.4, 50.5, 45.7, 70.9, 80.1],
-    'customers': [23, 30, 40, 43, 45, 52],
-    'traffic': [123, 234, 566, 899, 1000, 1200],
-    'emails': [23, 30, 40, 42, 45, 52]
-}
+kpi_list = [
+    'sales', 'traffic', 'subscribers',
+    'active_users', 'paying_users', 'engagement',
+    'mrr', 'cpa', 'pilots', 'product_releases', 'preorders',
+    'automation_percents', 'conversion_rate', 'marketing_spent',
+    'other_1', 'other_2']
+
+kpis = {}
+for metric in kpi_list:
+    kpis[metric] = [random.randint(10, 50) for _ in range(10)]

@@ -1,7 +1,7 @@
 # server/tests/unit/kpi/test_post.py
 
 import json
-from app.models import Sale, Customer, Traffic, Email
+import app.models
 from tests.base import BaseTestClass
 from tests.sample_data import data1, kpis
 
@@ -35,9 +35,9 @@ class KpiPOSTTest(BaseTestClass):
             f'/companies/{company_id}',
             data={
                 'sales': kpis['sales'][0],
-                'customers': '',
+                'subscribers': '',
                 'traffic': kpis['traffic'][0],
-                'emails': kpis['emails'][0],
+                'preorders': kpis['preorders'][0],
             },
             headers=self.get_authorized_header(auth_token)
         )
@@ -107,14 +107,13 @@ class KpiPOSTTest(BaseTestClass):
             data=data,
             headers=self.get_authorized_header(auth_token)
         )
-        sale = Sale.query.filter_by(company_id=company_id)
-        customers = Customer.query.filter_by(company_id=company_id)
-        traffic = Traffic.query.filter_by(company_id=company_id)
-        emails = Email.query.filter_by(company_id=company_id)
-        self.assertEqual(sale[0].value, data['sales'])
-        self.assertEqual(customers[0].value, data['customers'])
-        self.assertEqual(traffic[0].value, data['traffic'])
-        self.assertEqual(emails[0].value, data['emails'])
+
+        for metric in self.metrics:
+            self.assertEqual(
+                self.KPI[metric].query
+                    .filter_by(company_id=company_id)[0].value,
+                data[metric]
+            )
 
     def test_post_one_kpi_to_company_database(self):
         auth_token = self.get_auth_token(staff=True)
@@ -126,14 +125,11 @@ class KpiPOSTTest(BaseTestClass):
             },
             headers=self.get_authorized_header(auth_token)
         )
-        sale = Sale.query.filter_by(company_id=company_id)
-        customers = Customer.query.filter_by(company_id=company_id).first()
-        traffic = Traffic.query.filter_by(company_id=company_id).first()
-        emails = Email.query.filter_by(company_id=company_id).first()
+        sale = app.models.Sale.query.filter_by(company_id=company_id)
+        traffic = app.models.Traffic.query.filter_by(
+            company_id=company_id).first()
         self.assertEqual(sale[0].value, 123)
-        self.assertIsNone(customers)
         self.assertIsNone(traffic)
-        self.assertIsNone(emails)
 
     def test_post_all_kpis_to_company_many_weeks_database(self):
         """>\tPOST all the KPIs over the span of 4 weeks and
@@ -148,21 +144,15 @@ class KpiPOSTTest(BaseTestClass):
                 headers=self.get_authorized_header(auth_token)
             )
 
-        sale = Sale.query.filter_by(company_id=company_id)
-        customers = Customer.query.filter_by(company_id=company_id)
-        traffic = Traffic.query.filter_by(company_id=company_id)
-        emails = Email.query.filter_by(company_id=company_id)
-
         for i in range(4):
             weekly_kpis = self.kpi_for_week(i)
-            # Check for value
-            self.assertEqual(sale[i].value, weekly_kpis['sales'])
-            self.assertEqual(customers[i].value, weekly_kpis['customers'])
-            self.assertEqual(traffic[i].value, weekly_kpis['traffic'])
-            self.assertEqual(emails[i].value, weekly_kpis['emails'])
 
-            # Check for week number
-            self.assertEqual(sale[i].week, i)
-            self.assertEqual(customers[i].week, i)
-            self.assertEqual(traffic[i].week, i)
-            self.assertEqual(emails[i].week, i)
+            for metric in self.metrics:
+                metric_db = self.KPI[metric].query.filter_by(
+                    company_id=company_id)
+
+                # check for value
+                self.assertEqual(metric_db[i].value, weekly_kpis[metric])
+
+                # check for week number
+                self.assertEqual(metric_db[i].week, i)

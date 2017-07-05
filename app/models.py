@@ -18,9 +18,21 @@ class Company(db.Model):
 
     founders = db.relationship('Founder', backref='company', lazy='dynamic')
     sales = db.relationship('Sale', backref='company', lazy='dynamic')
-    customers = db.relationship('Customer', backref='company', lazy='dynamic')
     traffic = db.relationship('Traffic', backref='company', lazy='dynamic')
-    emails = db.relationship('Email', backref='company', lazy='dynamic')
+    active_users = db.relationship('ActiveUser', backref='company', lazy='dynamic')
+    paying_users = db.relationship('PayingUser', backref='company', lazy='dynamic')
+    subscribers = db.relationship('Subscriber', backref='company', lazy='dynamic')
+    engagement = db.relationship('Engagement', backref='company', lazy='dynamic')
+    pilots = db.relationship('Pilot', backref='company', lazy='dynamic')
+    product_releases = db.relationship('ProductRelease', backref='company', lazy='dynamic')
+    preorders = db.relationship('Preorder', backref='company', lazy='dynamic')
+    automation_percents = db.relationship('AutomationPercentage', backref='company', lazy='dynamic')
+    cpa = db.relationship('CPA', backref='company', lazy='dynamic')
+    conversion_rate = db.relationship('ConversionRate', backref='company', lazy='dynamic')
+    marketing_spent = db.relationship('MarketingSpent', backref='company', lazy='dynamic')
+    other_1 = db.relationship('Other1', backref='company', lazy='dynamic')
+    other_2 = db.relationship('Other2', backref='company', lazy='dynamic')
+    mrr = db.relationship('MRR', backref='company', lazy='dynamic')
 
     def __repr__(self):
         return f'<Company: {self.name}, Website: {self.website}>'
@@ -150,16 +162,76 @@ class Sale(BaseMetric):
     __tablename__ = 'sales'
 
 
-class Customer(BaseMetric):
-
-    __tablename__ = 'customers'
-
-
 class Traffic(BaseMetric):
 
     __tablename__ = 'traffic'
 
 
-class Email(BaseMetric):
+class ActiveUser(BaseMetric):
 
-    __tablename__ = 'emails'
+    __tablename__ = 'active_users'
+
+
+class PayingUser(BaseMetric):
+
+    __tablename__ = 'paying_users'
+
+
+class Subscriber(BaseMetric):
+
+    __tablename__ = 'subscribers'
+
+
+class Engagement(BaseMetric):
+
+    __tablename__ = 'engagement'
+
+
+class MRR(BaseMetric):
+
+    __tablename__ = 'mrr'
+
+
+class Pilot(BaseMetric):
+
+    __tablename__ = 'pilots'
+
+
+class ProductRelease(BaseMetric):
+
+    __tablename__ = 'product_releases'
+
+
+class Preorder(BaseMetric):
+
+    __tablename__ = 'preorders'
+
+
+class AutomationPercentage(BaseMetric):
+
+    __tablename__ = 'automation_percents'
+
+
+class CPA(BaseMetric):
+
+    __tablename__ = 'cpa'
+
+
+class ConversionRate(BaseMetric):
+
+    __tablename__ = 'conversion_rate'
+
+
+class MarketingSpent(BaseMetric):
+
+    __tablename__ = 'marketing_spent'
+
+
+class Other1(BaseMetric):
+
+    __tablename__ = 'other_1'
+
+
+class Other2(BaseMetric):
+
+    __tablename__ = 'other_2'

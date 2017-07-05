@@ -13,8 +13,8 @@ from app.models import (
     User,
     Sale,
     Traffic,
-    Customer,
-    Email
+    Subscriber,
+    Preorder
 )
 
 app = create_app(config_name=os.environ.get('APP_SETTINGS'))
@@ -73,11 +73,11 @@ def populate():
             # Saving random metrics
             Sale(
                 company_id=new_company.id, value=random.randint(0, 100)).save()
-            Customer(
+            Subscriber(
                 company_id=new_company.id, value=random.randint(0, 100)).save()
             Traffic(
                 company_id=new_company.id, value=random.randint(0, 100)).save()
-            Email(
+            Preorder(
                 company_id=new_company.id, value=random.randint(0, 100)).save()
 
         for founder in company['founders']:

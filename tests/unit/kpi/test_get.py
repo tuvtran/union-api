@@ -7,8 +7,6 @@ from tests.sample_data import data1
 
 
 class KpiGETTest(BaseTestClass):
-    metrics = ['sales', 'customers', 'traffic', 'emails']
-
     # Format like "Fri, 16 Jun 2017 15:57:23 GMT"
     time_formatter = "%a, %d %b %Y %H:%M:%S GMT"
 
@@ -105,4 +103,5 @@ class KpiGETTest(BaseTestClass):
 
             for i in range(count):
                 weekly_kpis = self.kpi_for_week(i)
-                self.assertEqual(response_[metric]['data'][i], weekly_kpis[metric])
+                self.assertEqual(
+                    response_[metric]['data'][i], weekly_kpis[metric])

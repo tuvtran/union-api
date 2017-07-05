@@ -15,6 +15,9 @@ venv/
 # C extensions
 *.so
 
+# vs code
+.vscode/
+
 # Distribution / packaging
 .Python
 build/
