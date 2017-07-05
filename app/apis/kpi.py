@@ -1,6 +1,5 @@
 # server/app/apis/kpi.py
 
-import app.models
 from flask import (
     jsonify,
     request,
@@ -13,24 +12,9 @@ from app.apis import kpi_blueprint as kpi
 from app.apis.auth import protected_route
 from app.models import User, Company, BaseMetric
 
-KPI: Dict[str, Any] = {
-    'sales': app.models.Sale,
-    'traffic': app.models.Traffic,
-    'subscribers': app.models.Subscriber,
-    'engagement': app.models.Engagement,
-    'mrr': app.models.MRR,
-    'pilots': app.models.Pilot,
-    'active_users': app.models.ActiveUser,
-    'paying_users': app.models.PayingUser,
-    'cpa': app.models.CPA,
-    'product_releases': app.models.ProductRelease,
-    'preorders': app.models.Preorder,
-    'automation_percents': app.models.AutomationPercentage,
-    'conversion_rate': app.models.ConversionRate,
-    'marketing_spent': app.models.MarketingSpent,
-    'other_1': app.models.Other1,
-    'other_2': app.models.Other2,
-}
+KPI: Dict[str, Any] = {}
+for Metric in BaseMetric.__subclasses__():
+    KPI[Metric.__tablename__] = Metric
 
 
 def get_kpi_for_company(company_id) -> Dict[str, Any]:

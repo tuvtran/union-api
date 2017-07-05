@@ -161,6 +161,4 @@ def get_company(company_id: int, resp: int = None) -> Tuple[object, int]:
         'bio': company.bio
     }
 
-    data['metrics'] = get_kpi_for_company(company_id)
-
     return jsonify(data), 200

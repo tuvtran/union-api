@@ -1,4 +1,4 @@
-import app.models
+from app.models import BaseMetric
 
 companies = [
     {
@@ -143,21 +143,6 @@ companies = [
     },
 ]
 
-KPI = {
-    'sales': app.models.Sale,
-    'traffic': app.models.Traffic,
-    'subscribers': app.models.Subscriber,
-    'engagement': app.models.Engagement,
-    'mrr': app.models.MRR,
-    'pilots': app.models.Pilot,
-    'active_users': app.models.ActiveUser,
-    'paying_users': app.models.PayingUser,
-    'cpa': app.models.CPA,
-    'product_releases': app.models.ProductRelease,
-    'preorders': app.models.Preorder,
-    'automation_percents': app.models.AutomationPercentage,
-    'conversion_rate': app.models.ConversionRate,
-    'marketing_spent': app.models.MarketingSpent,
-    'other_1': app.models.Other1,
-    'other_2': app.models.Other2,
-}
+KPI = {}
+for Metric in BaseMetric.__subclasses__():
+    KPI[Metric.__tablename__] = Metric
