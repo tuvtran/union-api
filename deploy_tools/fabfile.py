@@ -9,7 +9,7 @@ def deploy(sitename: str, db_info: str, app_settings: str="staging") -> None:
     site_folder: str = f'/home/{env.user}/sites/{sitename}'
     source_folder: str = site_folder + '/source'
     _create_directory_structure_if_necessary(site_folder)
-    _get_latest_source(source_folder)
+    _get_latest_source(source_folder, app_settings)
     _update_virtualenv(source_folder)
     _update_database(source_folder, db_info, app_settings)
 
@@ -19,11 +19,12 @@ def _create_directory_structure_if_necessary(site_folder: str) -> None:
         run(f'mkdir -p {site_folder}/{subfolder}')
 
 
-def _get_latest_source(source_folder: str):
+def _get_latest_source(source_folder: str, app_settings: str):
+    branchname: str = "master" if app_settings == "production" else "staging"
     if exists(source_folder + '/.git'):
-        run(f'cd {source_folder} && git fetch')
+        run(f'cd {source_folder} && git pull origin {branchname}')
     else:
-        run(f'git clone {REPO_URL} {source_folder}')
+        run(f'git clone -b {branchname} {REPO_URL} {source_folder}')
     current_commit = local("git log -n 1 --format=%H", capture=True)
     run(f'cd {source_folder} && git reset --hard {current_commit}')
 
@@ -38,7 +39,7 @@ def _update_virtualenv(source_folder: str):
 
 
 def _update_database(
-        source_folder: str, db_info: str, app_settings: str="staging"):
+        source_folder: str, db_info: str, app_settings: str):
     with shell_env(
         DATABASE_URL='postgresql://' + db_info,
         APP_SETTINGS=app_settings
