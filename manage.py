@@ -1,8 +1,10 @@
-# server/manage.py
+# manage.py
 
 import os
 import random
+import coverage
 import unittest
+
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from populate import companies, KPI
@@ -13,11 +15,24 @@ from app.models import (
     User,
 )
 
+COV = coverage.coverage(
+    branch=True,
+    include='app/*',
+    omit=[
+        '**/__init__.py',
+        'venv/*',
+        '/usr/local/*',
+    ]
+)
+COV.start()
+
 app = create_app(config_name=os.environ.get('APP_SETTINGS'))
 migrate = Migrate(app, db)
 manager = Manager(app)
 
 manager.add_command('db', MigrateCommand)
+
+is_production = (os.environ.get('APP_SETTINGS') == 'production')
 
 
 @manager.command
@@ -65,12 +80,15 @@ def populate():
 
         new_company.save()
 
-        for _ in range(10):
+        if is_production:
+            # We only add dummy data points
+            # if not in production mode
             # Saving random metrics
-            for metric in KPI:
-                KPI[metric](
-                    company_id=new_company.id, value=random.randint(0, 100)
-                ).save()
+            for _ in range(10):
+                for metric in KPI:
+                    KPI[metric](
+                        company_id=new_company.id, value=random.randint(0, 100)
+                    ).save()
 
         for founder in company['founders']:
             new_founder = Founder(
@@ -85,6 +103,22 @@ def populate():
             new_founder.save()
 
     db.session.commit()
+
+
+@manager.command
+def cov():
+    """Runs the unit tests with coverage."""
+    tests = unittest.TestLoader().discover('tests/unit')
+    result = unittest.TextTestRunner(verbosity=2).run(tests)
+    if result.wasSuccessful():
+        COV.stop()
+        COV.save()
+        print('Coverage summary:')
+        COV.report()
+        COV.html_report()
+        COV.erase()
+        return 0
+    return 1
 
 
 @manager.command
