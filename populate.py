@@ -48,19 +48,19 @@ companies = [
         'founders': [
             {
                 'name': 'Tanja Mimica',
-                'email': 'tanjam@consulmates.com',
+                'email': 'tanjam@martin.ai',
                 'role': 'CEO'
             },
             {
                 'name': 'James Hassett',
-                'email': 'jamesh@consulmates.com',
+                'email': 'jamesh@martin.ai',
                 'role': 'CTO'
             },
         ],
         'bio': """Our goals are the same as those of our clients and
         consultants – profitable, well-run veterinary practices with
         happy teams and clients!""",
-        'website': 'https://www.consultmates.com/'
+        'website': 'https://www.martin.ai/'
     },
     {
         'name': 'Tame The Beast',
