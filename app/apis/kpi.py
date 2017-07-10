@@ -1,5 +1,6 @@
 # server/app/apis/kpi.py
 
+import datetime
 from flask import (
     jsonify,
     request,
@@ -18,6 +19,8 @@ for Metric in BaseMetric.__subclasses__():
 
 
 def get_kpi_for_company(company_id) -> Dict[str, Any]:
+    # default time before adding new metrics
+    default_time = datetime.datetime.utcnow() - datetime.timedelta(days=10)
     metric_field = {}
 
     for metric in KPI:
@@ -25,7 +28,7 @@ def get_kpi_for_company(company_id) -> Dict[str, Any]:
         total_weeks = kpi_query.count()
         values = kpi_query.order_by(KPI[metric].week).all()
         last_updated = KPI[metric].get_last_updated(company_id).updated_at \
-            if KPI[metric].get_last_updated(company_id) else 'NOT AVAILABLE'
+            if KPI[metric].get_last_updated(company_id) else default_time
 
         metric_field[metric] = {
             'weeks': total_weeks,

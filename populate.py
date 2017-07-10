@@ -99,7 +99,7 @@ companies = [
         'website': 'https://www.jumperthreads.com/'
     },
     {
-        'name': 'Obe Pet Products',
+        'name': 'Obe, Inc',
         'founders': [
             {
                 'name': 'Hilary Wade Jensen',
