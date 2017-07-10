@@ -48,8 +48,7 @@ def _update_database(
             f'cd {source_folder}'
             ' && ../virtualenv/bin/python manage.py db upgrade'
         )
-        if app_settings == "staging":
-            run(
-                f'cd {source_folder}'
-                ' && ../virtualenv/bin/python manage.py populate'
-            )
+        run(
+            f'cd {source_folder}'
+            ' && ../virtualenv/bin/python manage.py populate'
+        )

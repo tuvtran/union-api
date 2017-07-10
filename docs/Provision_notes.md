@@ -26,11 +26,11 @@ SECRET, APP\_SETTINGS, DATABASE_URL
 API staging: `/etc/nginx/sites-available/staging.unionapi.brandery.org`
 ```
 server {
-    listen 80;
-    server_name 138.197.89.23;
+    listen PORT;
+    server_name SITENAME;
 
     location / {
-        proxy_pass http://unix:/tmp/$SITENAME.socket;
+        proxy_pass http://unix:/tmp/SITENAME.socket;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
     }
@@ -57,16 +57,16 @@ Restart=on-failure
 User=brandery
 WorkingDirectory=/home/brandery/sites/$SITENAME/source
 Environment=SECRET=SERKIT
-Environment=APP_SETTINGS=staging"
+Environment=APP_SETTINGS=staging
 Environment=DATABASE_URL=SERKIT
-ExecStart=/home/brandery/sites/$SITENAME/virtualenv/bin/gunicorn \
+ExecStart=/home/brandery/sites/SITENAME/virtualenv/bin/gunicorn \
     --bind unix:/tmp/$SITENAME.socket wsgi:app -w 10
 
 [Install]
 WantedBy=multi-user.target
+```
 
 ## Using the new service:
 sudo systemctl daemon-reload
 sudo systemctl enable gunicorn-$SITENAME.service
 sudo systemctl start gunicorn-$SITENAME.service
-```

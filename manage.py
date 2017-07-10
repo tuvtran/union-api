@@ -80,7 +80,7 @@ def populate():
 
         new_company.save()
 
-        if is_production:
+        if not is_production:
             # We only add dummy data points
             # if not in production mode
             # Saving random metrics

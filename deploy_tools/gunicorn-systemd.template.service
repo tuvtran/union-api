@@ -1,0 +1,15 @@
+[Unit]
+Description=Gunicorn server for Union dashboard
+
+[Service]
+Restart=on-failure
+User=brandery
+WorkingDirectory=/home/brandery/sites/SITENAME/source
+Environment=SECRET=SECRET
+Environment=APP_SETTINGS=APPSETTINGS
+Environment=DATABASE_URL=DATABASE
+ExecStart=/home/brandery/sites/SITENAME/virtualenv/bin/gunicorn \
+    --bind unix:/tmp/$SITENAME.socket wsgi:app -w 10
+
+[Install]
+WantedBy=multi-user.target
