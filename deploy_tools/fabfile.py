@@ -22,7 +22,7 @@ def _create_directory_structure_if_necessary(site_folder: str) -> None:
 def _get_latest_source(source_folder: str, app_settings: str):
     branchname: str = "master" if app_settings == "production" else "staging"
     if exists(source_folder + '/.git'):
-        run(f'cd {source_folder} && git pull origin {branchname}')
+        run(f'cd {source_folder} && git fetch origin {branchname}')
     else:
         run(f'git clone -b {branchname} {REPO_URL} {source_folder}')
     current_commit = local("git log -n 1 --format=%H", capture=True)
