@@ -9,7 +9,7 @@ Environment=SECRET=SECRET
 Environment=APP_SETTINGS=APPSETTINGS
 Environment=DATABASE_URL=DATABASE
 ExecStart=/home/brandery/sites/SITENAME/virtualenv/bin/gunicorn \
-    --bind unix:/tmp/$SITENAME.socket wsgi:app -w 10
+    --bind unix:/tmp/SITENAME.socket wsgi:app -w 10
 
 [Install]
 WantedBy=multi-user.target
