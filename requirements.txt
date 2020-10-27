@@ -6,7 +6,7 @@ cffi==1.10.0
 chardet==3.0.4
 click==6.7
 coverage==4.4.1
-cryptography==1.9
+cryptography==3.2
 Fabric3==1.13.1.post1
 Flask==0.12.2
 Flask-Bcrypt==0.7.1
